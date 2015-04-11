@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -20,6 +21,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
 import jssc.SerialPortList;
 
 /**
@@ -32,7 +34,7 @@ public class UI extends javax.swing.JFrame {
     private LogUpdator u;
     private PortReader p;
     private String statusFilePath;
-    final private String ver = "ZX Serial 1.22b";
+    final private String ver = "ZX Serial 1.42 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2014\\";
     final private String[] expLists;
@@ -49,7 +51,6 @@ public class UI extends javax.swing.JFrame {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
         portNames = SerialPortList.getPortNames();
-        u = new LogUpdator();
         FileLib flib = new FileLib();
         String s = flib.readPath("[BroadcastPath]");
         if (s != null) {
@@ -59,8 +60,13 @@ public class UI extends javax.swing.JFrame {
         if (sp != null) {
             savePath = sp;
         }
+        u = new LogUpdator();
         expLists = flib.getExperimentConditions();
         initComponents();
+
+        btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
+            jButton6, jButton7, jButton8, jButton9, chkReset, btnStop};
+        btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash};
     }
 
     private void initLogger() throws IOException {
@@ -81,7 +87,7 @@ public class UI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        MainPanel = new javax.swing.JPanel();
         cboxCOMList = new javax.swing.JComboBox();
         btnRecord = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
@@ -91,19 +97,37 @@ public class UI extends javax.swing.JFrame {
         txtFileName = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtPerf = new javax.swing.JTextArea();
-        txtCurrSta = new javax.swing.JTextField();
         btnOpen = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         btnDate = new javax.swing.JButton();
         btnType = new javax.swing.JButton();
         btnSlash = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtCurrPref = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButtonReset = new javax.swing.JButton();
+        chkReset = new javax.swing.JCheckBox();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton0 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(335, 320));
+        MainPanel.setPreferredSize(new java.awt.Dimension(335, 310));
 
         cboxCOMList.setModel(new javax.swing.DefaultComboBoxModel(portNames));
+        cboxCOMList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboxCOMListActionPerformed(evt);
+            }
+        });
 
         btnRecord.setText("|>");
         btnRecord.setPreferredSize(new java.awt.Dimension(45, 20));
@@ -141,8 +165,6 @@ public class UI extends javax.swing.JFrame {
         txtPerf.setRows(5);
         jScrollPane3.setViewportView(txtPerf);
 
-        txtCurrSta.setEditable(false);
-
         btnOpen.setText("Open");
         btnOpen.setMaximumSize(new java.awt.Dimension(70, 23));
         btnOpen.setMinimumSize(new java.awt.Dimension(70, 23));
@@ -165,6 +187,10 @@ public class UI extends javax.swing.JFrame {
         });
 
         btnDate.setText("Date");
+        btnDate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnDate.setMaximumSize(new java.awt.Dimension(40, 23));
+        btnDate.setMinimumSize(new java.awt.Dimension(40, 23));
+        btnDate.setPreferredSize(new java.awt.Dimension(40, 23));
         btnDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDateActionPerformed(evt);
@@ -172,6 +198,10 @@ public class UI extends javax.swing.JFrame {
         });
 
         btnType.setText("Type");
+        btnType.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnType.setMaximumSize(new java.awt.Dimension(30, 23));
+        btnType.setMinimumSize(new java.awt.Dimension(30, 23));
+        btnType.setPreferredSize(new java.awt.Dimension(30, 23));
         btnType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTypeActionPerformed(evt);
@@ -179,66 +209,229 @@ public class UI extends javax.swing.JFrame {
         });
 
         btnSlash.setText("\\");
+            btnSlash.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            btnSlash.setMaximumSize(new java.awt.Dimension(25, 23));
+            btnSlash.setMinimumSize(new java.awt.Dimension(25, 23));
+            btnSlash.setPreferredSize(new java.awt.Dimension(25, 23));
             btnSlash.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     btnSlashActionPerformed(evt);
                 }
             });
 
-            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-            jPanel1.setLayout(jPanel1Layout);
-            jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(cboxCOMList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnRecord, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnSlash)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnType)))
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane3)
-                        .addComponent(txtCurrSta, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+            jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+            txtCurrPref.setEditable(false);
+            txtCurrPref.setColumns(20);
+            txtCurrPref.setRows(2);
+            jScrollPane4.setViewportView(txtCurrPref);
+
+            jButton1.setText("1");
+            jButton1.setEnabled(false);
+            jButton1.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton1ActionPerformed(evt);
+                }
+            });
+
+            jButton2.setText("2");
+            jButton2.setEnabled(false);
+            jButton2.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton2.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton2ActionPerformed(evt);
+                }
+            });
+
+            jButton3.setText("3");
+            jButton3.setEnabled(false);
+            jButton3.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton3.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton3ActionPerformed(evt);
+                }
+            });
+
+            jButton4.setText("4");
+            jButton4.setEnabled(false);
+            jButton4.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton4.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton4ActionPerformed(evt);
+                }
+            });
+
+            jButton5.setText("5");
+            jButton5.setEnabled(false);
+            jButton5.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton5.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton5ActionPerformed(evt);
+                }
+            });
+
+            jButtonReset.setText("RESET");
+            jButtonReset.setEnabled(false);
+            jButtonReset.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButtonReset.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButtonResetActionPerformed(evt);
+                }
+            });
+
+            chkReset.setEnabled(false);
+            chkReset.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    chkResetActionPerformed(evt);
+                }
+            });
+
+            jButton6.setText("6");
+            jButton6.setEnabled(false);
+            jButton6.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton6.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton6ActionPerformed(evt);
+                }
+            });
+
+            jButton7.setText("7");
+            jButton7.setEnabled(false);
+            jButton7.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton7.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton7ActionPerformed(evt);
+                }
+            });
+
+            jButton8.setText("8");
+            jButton8.setEnabled(false);
+            jButton8.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton8.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton8ActionPerformed(evt);
+                }
+            });
+
+            jButton9.setText("9");
+            jButton9.setEnabled(false);
+            jButton9.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton9.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton9ActionPerformed(evt);
+                }
+            });
+
+            jButton0.setText("0");
+            jButton0.setEnabled(false);
+            jButton0.setMargin(new java.awt.Insets(2, 2, 2, 2));
+            jButton0.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton0ActionPerformed(evt);
+                }
+            });
+
+            javax.swing.GroupLayout MainPanelLayout = new javax.swing.GroupLayout(MainPanel);
+            MainPanel.setLayout(MainPanelLayout);
+            MainPanelLayout.setHorizontalGroup(
+                MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(MainPanelLayout.createSequentialGroup()
+                    .addComponent(cboxCOMList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane1))
+                    .addComponent(btnRecord, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addComponent(jScrollPane2)
+                .addGroup(MainPanelLayout.createSequentialGroup()
+                    .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                            .addComponent(btnDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(8, 8, 8))
+                        .addComponent(jScrollPane3)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                            .addComponent(jButton1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(chkReset)
+                            .addContainerGap())
+                        .addComponent(jScrollPane1)
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                            .addComponent(jButton6)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton9)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton0)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonReset)
+                            .addGap(0, 26, Short.MAX_VALUE))))
             );
-            jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnClear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnOpen, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            MainPanelLayout.setVerticalGroup(
+                MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(MainPanelLayout.createSequentialGroup()
+                    .addGap(3, 3, 3)
+                    .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(btnStop, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnRecord, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cboxCOMList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnType, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnSlash, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnDate, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2)
+                            .addComponent(jButton3)
+                            .addComponent(jButton4)
+                            .addComponent(jButton5)
+                            .addComponent(chkReset))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                    .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtCurrSta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(MainPanelLayout.createSequentialGroup()
+                            .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton6)
+                                .addComponent(jButton7)
+                                .addComponent(jButton8)
+                                .addComponent(jButton9)
+                                .addComponent(jButton0)
+                                .addComponent(jButtonReset))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jScrollPane1)))
                     .addGap(4, 4, 4))
             );
 
@@ -246,12 +439,12 @@ public class UI extends javax.swing.JFrame {
             getContentPane().setLayout(layout);
             layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                .addComponent(MainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             );
             layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
                     .addGap(0, 0, 0))
             );
 
@@ -262,13 +455,12 @@ public class UI extends javax.swing.JFrame {
         p = new PortReader(portNames[cboxCOMList.getSelectedIndex()]);
         p.setUpdater(u);
         if (p.setFileToPath(txtFileName.getText()) && p.start()) {
-            btnRecord.setEnabled(false);
-            txtFileName.setEditable(false);
-            btnStop.setEnabled(true);
-            btnClear.setEnabled(false);
-            btnDate.setEnabled(false);
-            btnType.setEnabled(false);
-            btnSlash.setEnabled(false);
+            for (JComponent jc : btnDisableGrp) {
+                jc.setEnabled(false);
+            }
+            for (JComponent jc : btnEnableGrp) {
+                jc.setEnabled(true);
+            }
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
@@ -277,13 +469,13 @@ public class UI extends javax.swing.JFrame {
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         p.stop();
-        btnRecord.setEnabled(true);
-        btnStop.setEnabled(false);
-        btnDate.setEnabled(true);
-        btnType.setEnabled(true);
-        btnClear.setEnabled(true);
-        txtFileName.setEditable(true);
-        btnSlash.setEnabled(true);
+        u.updatePerf();
+        for (JComponent jc : btnDisableGrp) {
+            jc.setEnabled(true);
+        }
+        for (JComponent jc : btnEnableGrp) {
+            jc.setEnabled(false);
+        }
         this.setTitle(portNames[cboxCOMList.getSelectedIndex()] + " " + ver);
     }//GEN-LAST:event_btnStopActionPerformed
 
@@ -302,7 +494,7 @@ public class UI extends javax.swing.JFrame {
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         u = new LogUpdator();
-        txtCurrSta.setText("");
+        txtCurrPref.setText("");
         txtLog.setText("");
         txtPerf.setText("");
     }//GEN-LAST:event_btnClearActionPerformed
@@ -315,12 +507,65 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDateActionPerformed
 
     private void btnTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTypeActionPerformed
-        (new ExperimentsForm(expLists,txtFileName)).setVisible(true);
+        (new ExperimentsForm(expLists, txtFileName)).setVisible(true);
     }//GEN-LAST:event_btnTypeActionPerformed
 
     private void btnSlashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSlashActionPerformed
         txtFileName.append("\\");
     }//GEN-LAST:event_btnSlashActionPerformed
+
+    private void cboxCOMListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxCOMListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboxCOMListActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        p.writeByte((byte) 0x31);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
+        p.writeByte((byte) 0x2a);
+    }//GEN-LAST:event_jButtonResetActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        p.writeByte((byte) 0x32);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        p.writeByte((byte) 0x33);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        p.writeByte((byte) 0x34);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        p.writeByte((byte) 0x35);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void chkResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkResetActionPerformed
+
+        jButtonReset.setEnabled(chkReset.isSelected());
+    }//GEN-LAST:event_chkResetActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        p.writeByte((byte) 0x36);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        p.writeByte((byte) 0x37);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        p.writeByte((byte) 0x38);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        p.writeByte((byte) 0x39);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton0ActionPerformed
+        p.writeByte((byte) 0x30);
+    }//GEN-LAST:event_jButton0ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -353,10 +598,10 @@ public class UI extends javax.swing.JFrame {
 
 //        final private List<String> logList;
         final private String[] logs;
-        final private ArrayList<int[]> perfHist;
+        final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean update;
-        private int[] currSta;//
+        private int[][] currSta;//
         private int logIdx;
 
         public LogUpdator() {
@@ -368,27 +613,34 @@ public class UI extends javax.swing.JFrame {
             logIdx = 0;
             perfHist = new ArrayList<>();
             hName = eventNames.init();
-            currSta = new int[4];//Hit,Miss,False,Reject
+            currSta = new int[2][4];//Hit,Miss,False,Reject
             update = (new File(statusFileParent)).exists();
 
         }
 
-        private void updatePerf() {
-            if (currSta[0] + currSta[1] + currSta[2] + currSta[3] != 0) {
+        public void updatePerf() {
+            Arrays.stream(currSta[0]).sum();
+            if (Arrays.stream(currSta[0]).sum() + Arrays.stream(currSta[1]).sum() > 0) {
                 perfHist.add(currSta);
                 String perf = "";
                 for (int i = perfHist.size(); i > 0; i--) {
                     perf += "S" + String.format("%2d", i) + ",";
                     int idx = i - 1;
-                    int[] histSta = perfHist.get(idx);
-                    int performance = (histSta[0] + histSta[3]) * 100
-                            / (histSta[0] + histSta[1] + histSta[2] + histSta[3]);
+                    int[][] histSta = perfHist.get(idx);
+                    int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
+                            / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
 
                     perf += "P" + String.format("%3d", performance) + ",";
-                    perf += "H" + String.format("%2d", histSta[0]) + ",";
-                    perf += "M" + String.format("%2d", histSta[1]) + ",";
-                    perf += "F" + String.format("%2d", histSta[2]) + ",";
-                    perf += "C" + String.format("%2d", histSta[3]) + "\r\n";
+                    perf += "H" + String.format("%2d", histSta[0][0]) + ",";
+                    perf += "M" + String.format("%2d", histSta[0][1]) + ",";
+                    perf += "F" + String.format("%2d", histSta[0][2]) + ",";
+                    perf += "C" + String.format("%2d", histSta[0][3]) + "\r\n";
+                    if (histSta[1][0] + histSta[1][1] + histSta[1][2] + histSta[1][3] > 0) {
+                        perf += "-->R,H" + String.format("%2d", histSta[1][0]) + ",";
+                        perf += "M" + String.format("%2d", histSta[1][1]) + ",";
+                        perf += "F" + String.format("%2d", histSta[1][2]) + ",";
+                        perf += "C" + String.format("%2d", histSta[1][3]) + "\r\n\r\n";
+                    }
                 }
                 txtPerf.setText(perf);
                 if (update) {
@@ -398,17 +650,23 @@ public class UI extends javax.swing.JFrame {
                         Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                currSta = new int[4];
+                currSta = new int[2][4];
             }
         }
 
         private void updateCurrSta() {
             String currStaStr = "";
-            currStaStr += "H" + String.format("%2d", currSta[0]) + "  ";
-            currStaStr += "M" + String.format("%2d", currSta[1]) + "  ";
-            currStaStr += "F" + String.format("%2d", currSta[2]) + "  ";
-            currStaStr += "C" + String.format("%2d", currSta[3]);
-            txtCurrSta.setText(currStaStr);
+            currStaStr += "H" + String.format("%2d", currSta[0][0]) + "  ";
+            currStaStr += "M" + String.format("%2d", currSta[0][1]) + "  ";
+            currStaStr += "F" + String.format("%2d", currSta[0][2]) + "  ";
+            currStaStr += "C" + String.format("%2d", currSta[0][3]);
+            if (currSta[1][0] + currSta[1][1] + currSta[1][2] + currSta[1][3] > 0) {
+                currStaStr += "\r\nH" + String.format("%2d", currSta[1][0]) + "  ";
+                currStaStr += "M" + String.format("%2d", currSta[1][1]) + "  ";
+                currStaStr += "F" + String.format("%2d", currSta[1][2]) + "  ";
+                currStaStr += "C" + String.format("%2d", currSta[1][3]);
+            }
+            txtCurrPref.setText(currStaStr);
         }
 
         public void updateEvent(int[] event) {
@@ -425,19 +683,19 @@ public class UI extends javax.swing.JFrame {
                     }
                     break;
                 case 4:
-                    currSta[2]++;//false
+                    currSta[event[3] == 3 ? 1 : 0][2]++;//false
                     updateCurrSta();
                     break;
                 case 5:
-                    currSta[3]++;//reject
+                    currSta[event[3] == 3 ? 1 : 0][3]++;//reject
                     updateCurrSta();
                     break;
                 case 6:
-                    currSta[1]++;//Miss
+                    currSta[event[3] == 3 ? 1 : 0][1]++;//Miss
                     updateCurrSta();
                     break;
                 case 7:
-                    currSta[0]++;
+                    currSta[event[3] == 3 ? 1 : 0][0]++;
                     updateCurrSta();
                     break;
             }
@@ -471,8 +729,15 @@ public class UI extends javax.swing.JFrame {
         }
     }
 
+    private long getPID() {
+        String processName
+                = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+        return Long.parseLong(processName.split("@")[0]);
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel MainPanel;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDate;
     private javax.swing.JButton btnOpen;
@@ -481,14 +746,28 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JButton btnStop;
     private javax.swing.JButton btnType;
     private javax.swing.JComboBox cboxCOMList;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JCheckBox chkReset;
+    private javax.swing.JButton jButton0;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButtonReset;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField txtCurrSta;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextArea txtCurrPref;
     private javax.swing.JTextArea txtFileName;
     private javax.swing.JTextArea txtLog;
     private javax.swing.JTextArea txtPerf;
     // End of variables declaration//GEN-END:variables
 
+    private JComponent[] btnEnableGrp;
+    private JComponent[] btnDisableGrp;
 }

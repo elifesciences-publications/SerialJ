@@ -62,6 +62,15 @@ public class PortReader {
         dp.stop();
     }
 
+    public boolean writeByte(byte b) {
+        try {
+            return serialPort.writeByte(b);
+        } catch (SerialPortException e) {
+            updator.updateString(e.toString() + "\r\n");
+            return false;
+        }
+    }
+
     class SerialPortReader implements SerialPortEventListener {
 
         @Override
