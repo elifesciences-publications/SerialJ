@@ -138,7 +138,8 @@ public class DataParser implements Runnable {
             try {
                 int[] e = q.take();
                 process(e);
-
+//                updater.updateEvent(new int[]{(int) System.currentTimeMillis() & 0x7fffffff, 0x55, 1, 2, 0xAA});
+//                Thread.sleep(ThreadLocalRandom.current().nextInt(20, 2000));
             } catch (InterruptedException ex) {
                 Logger.getLogger(DataParser.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import jssc.SerialPortList;
 
 /**
@@ -29,7 +30,7 @@ import jssc.SerialPortList;
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame {
-
+    
     final private String[] portNames;
     private LogUpdator u;
     private PortReader p;
@@ -43,7 +44,7 @@ public class UI extends javax.swing.JFrame {
      * Creates new form UI
      */
     public UI() {
-
+        
         try {
             initLogger();
             this.setIconImage(ImageIO.read(getClass().getResource("/rsrc/icon.png")));
@@ -63,12 +64,12 @@ public class UI extends javax.swing.JFrame {
         u = new LogUpdator();
         expLists = flib.getExperimentConditions();
         initComponents();
-
+        
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
             jButton6, jButton7, jButton8, jButton9, chkReset, btnStop};
         btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash};
     }
-
+    
     private void initLogger() throws IOException {
         Logger rootLogger = Logger.getLogger("");
         rootLogger.setLevel(Level.FINE);
@@ -452,6 +453,10 @@ public class UI extends javax.swing.JFrame {
         }// </editor-fold>//GEN-END:initComponents
 
     private void btnRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordActionPerformed
+        if (cboxCOMList.getSelectedIndex() < 0) {
+            return;
+        }
+        
         p = new PortReader(portNames[cboxCOMList.getSelectedIndex()]);
         p.setUpdater(u);
         if (p.setFileToPath(txtFileName.getText()) && p.start()) {
@@ -543,7 +548,7 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void chkResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkResetActionPerformed
-
+        
         jButtonReset.setEnabled(chkReset.isSelected());
     }//GEN-LAST:event_chkResetActionPerformed
 
@@ -593,31 +598,25 @@ public class UI extends javax.swing.JFrame {
             new UI().setVisible(true);
         });
     }
-
+    
     public class LogUpdator {
-
-//        final private List<String> logList;
-        final private String[] logs;
+        
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean update;
-        private int[][] currSta;//
-        private int logIdx;
-
+        final StringBuilder logTxt;
+        private int[][] currSta;
+        
         public LogUpdator() {
-//            logList = new ArrayList<>();
-            logs = new String[20];
-            for (int i = 0; i < 20; i++) {
-                logs[i] = "";
-            }
-            logIdx = 0;
+            logTxt = new StringBuilder();
+            logTxt.ensureCapacity(500);
             perfHist = new ArrayList<>();
             hName = eventNames.init();
             currSta = new int[2][4];//Hit,Miss,False,Reject
             update = (new File(statusFileParent)).exists();
-
+            
         }
-
+        
         public void updatePerf() {
             Arrays.stream(currSta[0]).sum();
             if (Arrays.stream(currSta[0]).sum() + Arrays.stream(currSta[1]).sum() > 0) {
@@ -629,7 +628,7 @@ public class UI extends javax.swing.JFrame {
                     int[][] histSta = perfHist.get(idx);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
-
+                    
                     perf += "P" + String.format("%3d", performance) + ",";
                     perf += "H" + String.format("%2d", histSta[0][0]) + ",";
                     perf += "M" + String.format("%2d", histSta[0][1]) + ",";
@@ -653,7 +652,7 @@ public class UI extends javax.swing.JFrame {
                 currSta = new int[2][4];
             }
         }
-
+        
         private void updateCurrSta() {
             String currStaStr = "";
             currStaStr += "H" + String.format("%2d", currSta[0][0]) + "  ";
@@ -668,8 +667,8 @@ public class UI extends javax.swing.JFrame {
             }
             txtCurrPref.setText(currStaStr);
         }
-
-        public void updateEvent(int[] event) {
+        
+        synchronized public void updateEvent(int[] event) {
             updateString(evt2Str(event));
             switch (event[2]) {
                 case 61:
@@ -698,21 +697,23 @@ public class UI extends javax.swing.JFrame {
                     currSta[event[3] == 3 ? 1 : 0][0]++;
                     updateCurrSta();
                     break;
+                case 20:
+                    if (event[3] == 1) {
+                        p.writeByte((byte) 0x31);
+                    }
             }
         }
-
-        public void updateString(String str) {
-            logs[logIdx] = str;
-            String status = "";
-            int updateIdx = logIdx;
-            for (int count = 0; count < 20; count++) {
-                status += logs[updateIdx] + "\r\n";
-                updateIdx = updateIdx > 0 ? updateIdx - 1 : 19;
+        
+        synchronized public void updateString(String str) {
+            logTxt.append(str).append("\r\n");
+            while (logTxt.length() > 500) {
+                logTxt.delete(0, logTxt.indexOf("\r\n") + 2);
             }
-            txtLog.setText(status.trim());
-            logIdx = logIdx < 19 ? logIdx + 1 : 0;
+            SwingUtilities.invokeLater(() -> {
+                txtLog.setText(logTxt.toString());
+            });
         }
-
+        
         private String evt2Str(int[] evt) {
             switch (evt[1]) {
                 case 0x55:
@@ -728,7 +729,7 @@ public class UI extends javax.swing.JFrame {
             }
         }
     }
-
+    
     private long getPID() {
         String processName
                 = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
@@ -768,6 +769,6 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JTextArea txtPerf;
     // End of variables declaration//GEN-END:variables
 
-    private JComponent[] btnEnableGrp;
-    private JComponent[] btnDisableGrp;
+    private final JComponent[] btnEnableGrp;
+    private final JComponent[] btnDisableGrp;
 }

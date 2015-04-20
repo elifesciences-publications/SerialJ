@@ -55,7 +55,7 @@ public class eventNames {
 
         trans[19] = "Out4";
 
-        trans[20] = "S1S1";
+        trans[20] = "Trial_Wait";
 
         trans[21] = "S1S2";
 
