@@ -35,7 +35,7 @@ public class UI extends javax.swing.JFrame {
     private LogUpdator u;
     private PortReader p;
     private String statusFilePath;
-    final private String ver = "ZX Serial 1.51 @" + getPID();
+    final private String ver = "ZX Serial 1.60 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2014\\";
     final private String[] expLists;
@@ -68,6 +68,7 @@ public class UI extends javax.swing.JFrame {
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
             jButton6, jButton7, jButton8, jButton9, chkReset, btnStop};
         btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash};
+        txtFileName.setEditable(true);
     }
 
     private void initLogger() throws IOException {
@@ -92,9 +93,9 @@ public class UI extends javax.swing.JFrame {
         cboxCOMList = new javax.swing.JComboBox();
         btnRecord = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollTxtLog = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollFilePath = new javax.swing.JScrollPane();
         txtFileName = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtPerf = new javax.swing.JTextArea();
@@ -117,6 +118,9 @@ public class UI extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton0 = new javax.swing.JButton();
+        jTxtPermText = new javax.swing.JTextField();
+        jTxtLickFreq = new javax.swing.JTextField();
+        jButtonClearLickFreq = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
@@ -152,18 +156,21 @@ public class UI extends javax.swing.JFrame {
         txtLog.setEditable(false);
         txtLog.setColumns(12);
         txtLog.setRows(5);
-        jScrollPane1.setViewportView(txtLog);
+        jScrollTxtLog.setViewportView(txtLog);
 
         txtFileName.setColumns(20);
         txtFileName.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         txtFileName.setLineWrap(true);
         txtFileName.setRows(2);
         txtFileName.setText(savePath);
-        jScrollPane2.setViewportView(txtFileName);
+        jScrollFilePath.setViewportView(txtFileName);
+
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(160, 200));
 
         txtPerf.setEditable(false);
         txtPerf.setColumns(12);
         txtPerf.setRows(5);
+        txtPerf.setPreferredSize(new java.awt.Dimension(150, 100));
         jScrollPane3.setViewportView(txtPerf);
 
         btnOpen.setText("Open");
@@ -222,10 +229,12 @@ public class UI extends javax.swing.JFrame {
 
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(160, 46));
 
         txtCurrPref.setEditable(false);
         txtCurrPref.setColumns(20);
         txtCurrPref.setRows(2);
+        txtCurrPref.setPreferredSize(new java.awt.Dimension(150, 44));
         jScrollPane4.setViewportView(txtCurrPref);
 
         jButton1.setText("1");
@@ -334,6 +343,33 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        jTxtPermText.setEditable(false);
+        jTxtPermText.setBackground(new java.awt.Color(255, 255, 255));
+        jTxtPermText.setPreferredSize(new java.awt.Dimension(160, 20));
+        jTxtPermText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtPermTextActionPerformed(evt);
+            }
+        });
+
+        jTxtLickFreq.setEditable(false);
+        jTxtLickFreq.setBackground(new java.awt.Color(255, 255, 255));
+        jTxtLickFreq.setPreferredSize(new java.awt.Dimension(135, 20));
+        jTxtLickFreq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtLickFreqActionPerformed(evt);
+            }
+        });
+
+        jButtonClearLickFreq.setText("C");
+        jButtonClearLickFreq.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        jButtonClearLickFreq.setPreferredSize(new java.awt.Dimension(20, 23));
+        jButtonClearLickFreq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonClearLickFreqActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout MainPanelLayout = new javax.swing.GroupLayout(MainPanel);
         MainPanel.setLayout(MainPanelLayout);
         MainPanelLayout.setHorizontalGroup(
@@ -348,48 +384,56 @@ public class UI extends javax.swing.JFrame {
                 .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane2)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(MainPanelLayout.createSequentialGroup()
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addComponent(btnDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(8, 8, 8))
-                    .addComponent(jScrollPane3)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(MainPanelLayout.createSequentialGroup()
+                                .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTxtPermText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkReset)
-                        .addContainerGap())
-                    .addComponent(jScrollPane1)
-                    .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton0)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonReset)
-                        .addGap(0, 26, Short.MAX_VALUE))))
+                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollTxtLog)
+                            .addGroup(MainPanelLayout.createSequentialGroup()
+                                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(MainPanelLayout.createSequentialGroup()
+                                        .addComponent(jButton6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton0)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonReset))
+                                    .addGroup(MainPanelLayout.createSequentialGroup()
+                                        .addComponent(jButton1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(chkReset))
+                                    .addGroup(MainPanelLayout.createSequentialGroup()
+                                        .addComponent(jTxtLickFreq, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonClearLickFreq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(1, 1, 1))))
+                    .addComponent(jScrollFilePath))
+                .addGap(2, 2, 2))
         );
         MainPanelLayout.setVerticalGroup(
             MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -403,27 +447,27 @@ public class UI extends javax.swing.JFrame {
                     .addComponent(btnRecord, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboxCOMList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(jButton1)
-                        .addComponent(jButton2)
-                        .addComponent(jButton3)
-                        .addComponent(jButton4)
-                        .addComponent(jButton5)
-                        .addComponent(chkReset))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jScrollFilePath, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(MainPanelLayout.createSequentialGroup()
+                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2)
+                            .addComponent(jButton3)
+                            .addComponent(jButton4)
+                            .addComponent(jButton5)
+                            .addComponent(chkReset))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton6)
                             .addComponent(jButton7)
@@ -432,15 +476,20 @@ public class UI extends javax.swing.JFrame {
                             .addComponent(jButton0)
                             .addComponent(jButtonReset))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1)))
-                .addGap(4, 4, 4))
+                        .addComponent(jScrollTxtLog, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTxtPermText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTxtLickFreq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonClearLickFreq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -451,6 +500,106 @@ public class UI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTxtPermTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtPermTextActionPerformed
+
+    }//GEN-LAST:event_jTxtPermTextActionPerformed
+
+    private void jButton0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton0ActionPerformed
+        p.writeByte((byte) 0x30);
+    }//GEN-LAST:event_jButton0ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        p.writeByte((byte) 0x39);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        p.writeByte((byte) 0x38);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        p.writeByte((byte) 0x37);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        p.writeByte((byte) 0x36);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void chkResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkResetActionPerformed
+
+        jButtonReset.setEnabled(chkReset.isSelected());
+    }//GEN-LAST:event_chkResetActionPerformed
+
+    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
+        p.writeByte((byte) 0x2a);
+    }//GEN-LAST:event_jButtonResetActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        p.writeByte((byte) 0x35);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        p.writeByte((byte) 0x34);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        p.writeByte((byte) 0x33);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        p.writeByte((byte) 0x32);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        p.writeByte((byte) 0x31);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnSlashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSlashActionPerformed
+        txtFileName.append(File.separator);
+    }//GEN-LAST:event_btnSlashActionPerformed
+
+    private void btnTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTypeActionPerformed
+        (new ExperimentsForm(expLists, txtFileName)).setVisible(true);
+    }//GEN-LAST:event_btnTypeActionPerformed
+
+    private void btnDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDateActionPerformed
+        //        Calendar cal = Calendar.getInstance();
+        //        txtFileName.append("_" + cal.get(Calendar.YEAR) + "_" + cal.get(Calendar.MONTH) + "_" + cal.get(Calendar.DATE) + "_");
+        SimpleDateFormat fmt = new SimpleDateFormat("_yyyy_MM_dd_");
+        txtFileName.append(fmt.format(new Date()));
+    }//GEN-LAST:event_btnDateActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        u = new LogUpdator();
+        txtCurrPref.setText("");
+        txtLog.setText("");
+        txtPerf.setText("");
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
+        File f = new File(txtFileName.getText());
+        if (f.exists()) {
+            try {
+                Desktop.getDesktop().open(new File(f.getParent()));
+            } catch (IOException ex) {
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            txtLog.append("File does not exist.\r\n");
+        }
+    }//GEN-LAST:event_btnOpenActionPerformed
+
+    private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
+        p.stop();
+        u.updatePerf();
+        for (JComponent jc : btnDisableGrp) {
+            jc.setEnabled(true);
+        }
+        for (JComponent jc : btnEnableGrp) {
+            jc.setEnabled(false);
+        }
+        this.setTitle(portNames[cboxCOMList.getSelectedIndex()] + " " + ver);
+    }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordActionPerformed
         if (cboxCOMList.getSelectedIndex() < 0) {
@@ -472,105 +621,17 @@ public class UI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRecordActionPerformed
 
-    private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
-        p.stop();
-        u.updatePerf();
-        for (JComponent jc : btnDisableGrp) {
-            jc.setEnabled(true);
-        }
-        for (JComponent jc : btnEnableGrp) {
-            jc.setEnabled(false);
-        }
-        this.setTitle(portNames[cboxCOMList.getSelectedIndex()] + " " + ver);
-    }//GEN-LAST:event_btnStopActionPerformed
-
-    private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-        File f = new File(txtFileName.getText());
-        if (f.exists()) {
-            try {
-                Desktop.getDesktop().open(new File(f.getParent()));
-            } catch (IOException ex) {
-                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            txtLog.append("File does not exist.\r\n");
-        }
-    }//GEN-LAST:event_btnOpenActionPerformed
-
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        u = new LogUpdator();
-        txtCurrPref.setText("");
-        txtLog.setText("");
-        txtPerf.setText("");
-    }//GEN-LAST:event_btnClearActionPerformed
-
-    private void btnDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDateActionPerformed
-//        Calendar cal = Calendar.getInstance();
-//        txtFileName.append("_" + cal.get(Calendar.YEAR) + "_" + cal.get(Calendar.MONTH) + "_" + cal.get(Calendar.DATE) + "_");
-        SimpleDateFormat fmt = new SimpleDateFormat("_yyyy_MM_dd_");
-        txtFileName.append(fmt.format(new Date()));
-    }//GEN-LAST:event_btnDateActionPerformed
-
-    private void btnTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTypeActionPerformed
-        (new ExperimentsForm(expLists, txtFileName)).setVisible(true);
-    }//GEN-LAST:event_btnTypeActionPerformed
-
-    private void btnSlashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSlashActionPerformed
-        txtFileName.append(File.separator);
-    }//GEN-LAST:event_btnSlashActionPerformed
-
     private void cboxCOMListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboxCOMListActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cboxCOMListActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        p.writeByte((byte) 0x31);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jTxtLickFreqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtLickFreqActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTxtLickFreqActionPerformed
 
-    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
-        p.writeByte((byte) 0x2a);
-    }//GEN-LAST:event_jButtonResetActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        p.writeByte((byte) 0x32);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        p.writeByte((byte) 0x33);
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        p.writeByte((byte) 0x34);
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        p.writeByte((byte) 0x35);
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void chkResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkResetActionPerformed
-
-        jButtonReset.setEnabled(chkReset.isSelected());
-    }//GEN-LAST:event_chkResetActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        p.writeByte((byte) 0x36);
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        p.writeByte((byte) 0x37);
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        p.writeByte((byte) 0x38);
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        p.writeByte((byte) 0x39);
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton0ActionPerformed
-        p.writeByte((byte) 0x30);
-    }//GEN-LAST:event_jButton0ActionPerformed
+    private void jButtonClearLickFreqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClearLickFreqActionPerformed
+        u.clearFreq();
+    }//GEN-LAST:event_jButtonClearLickFreqActionPerformed
 
     /**
      * @param args the command line arguments
@@ -604,8 +665,16 @@ public class UI extends javax.swing.JFrame {
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean update;
-        final StringBuilder logTxt;
+        final private StringBuilder logTxt;
         private int[][] currSta;
+        private int lFreq = 0;
+        private int lFreqMax = 0;
+        private int rFreq = 0;
+        private int rFreqMax = 0;
+        private final StringBuilder freqText;
+        private int lickCountFlag = 0;
+        private int lickCountTimeCount;
+        private int[] lickCount = new int[4];
 
         public LogUpdator() {
             logTxt = new StringBuilder();
@@ -614,7 +683,7 @@ public class UI extends javax.swing.JFrame {
             hName = eventNames.init();
             currSta = new int[2][4];//Hit,Miss,False,Reject
             update = (new File(statusFileParent)).exists();
-
+            freqText = new StringBuilder();
         }
 
         public void updatePerf() {
@@ -670,10 +739,26 @@ public class UI extends javax.swing.JFrame {
 
         synchronized public void updateEvent(int[] event) {
             updateString(evt2Str(event));
+
+            if (lickCountFlag > 0 && event[0] - lickCountTimeCount > 1000) {
+                switch (lickCountFlag) {
+                    case 1:
+                        lFreq = lickCount[2];
+                        lFreqMax = lFreqMax < lFreq ? lFreq : lFreqMax;
+                        break;
+                    case 2:
+                        rFreq = lickCount[3];
+                        rFreqMax = rFreqMax < rFreq ? rFreq : rFreqMax;
+                        break;
+                }
+                updateFreq();
+                lickCountFlag = 0;
+            }
+
             switch (event[2]) {
-                case 61:
-                    if (event[3] == 0) {
-                        updatePerf();
+                case 0:
+                    if (lickCountFlag > 0) {
+                        lickCount[event[3]]++;
                     }
                     break;
                 case 1:
@@ -701,7 +786,36 @@ public class UI extends javax.swing.JFrame {
                     if (event[3] == 1) {
                         p.writeByte((byte) 0x31);
                     }
+                    break;
+                case 21:
+                    updatePermString(event[3]);
+                    break;
+                case 22://
+                    lickCountFlag = event[3];
+                    lickCount = new int[4];
+                    lickCountTimeCount = event[0];
+                    break;
+                case 61:
+                    if (event[3] == 0) {
+                        updatePerf();
+                    }
+                    break;
+
             }
+        }
+
+        synchronized private void updateFreq() {
+//            if (lFreqMax + rFreqMax == 0) {
+//                return;
+//            }
+            freqText.setLength(0);
+            freqText.append("L:").append(lFreq).append(", ").append("LMax:").append(lFreqMax)
+                    .append("; ")
+                    .append("R:").append(rFreq).append(", ").append("RMax:").append(rFreqMax);
+            SwingUtilities.invokeLater(
+                    () -> {
+                        jTxtLickFreq.setText(freqText.toString());
+                    });
         }
 
         synchronized public void updateString(String str) {
@@ -709,8 +823,15 @@ public class UI extends javax.swing.JFrame {
             while (logTxt.length() > 500) {
                 logTxt.delete(0, logTxt.indexOf("\r\n") + 2);
             }
+            SwingUtilities.invokeLater(
+                    () -> {
+                        txtLog.setText(logTxt.toString());
+                    });
+        }
+
+        private void updatePermString(int evt) {
             SwingUtilities.invokeLater(() -> {
-                txtLog.setText(logTxt.toString());
+                jTxtPermText.setText(eventNames.getMessage(evt));
             });
         }
 
@@ -727,6 +848,17 @@ public class UI extends javax.swing.JFrame {
                 default:
                     return "unknown";
             }
+        }
+
+        public void clearFreq() {
+            lFreq = 0;
+            rFreq = 0;
+            rFreqMax = 0;
+            lFreqMax = 0;
+            SwingUtilities.invokeLater(
+                    () -> {
+                        jTxtLickFreq.setText("");
+                    });
         }
     }
 
@@ -758,11 +890,14 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButtonClearLickFreq;
     private javax.swing.JButton jButtonReset;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollFilePath;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollTxtLog;
+    private javax.swing.JTextField jTxtLickFreq;
+    private javax.swing.JTextField jTxtPermText;
     private javax.swing.JTextArea txtCurrPref;
     private javax.swing.JTextArea txtFileName;
     private javax.swing.JTextArea txtLog;
@@ -771,4 +906,5 @@ public class UI extends javax.swing.JFrame {
 
     private final JComponent[] btnEnableGrp;
     private final JComponent[] btnDisableGrp;
+
 }
