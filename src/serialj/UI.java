@@ -5,15 +5,20 @@
  */
 package serialj;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -35,7 +40,7 @@ public class UI extends javax.swing.JFrame {
     private LogUpdator u;
     private PortReader p;
     private String statusFilePath;
-    final private String ver = "ZX Serial 1.60 @" + getPID();
+    final private String ver = "ZX Serial 1.72 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2014\\";
     final private String[] expLists;
@@ -69,6 +74,7 @@ public class UI extends javax.swing.JFrame {
             jButton6, jButton7, jButton8, jButton9, chkReset, btnStop};
         btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash};
         txtFileName.setEditable(true);
+//        ses = new ScheduledThreadPoolExecutor(1);
     }
 
     private void initLogger() throws IOException {
@@ -165,12 +171,9 @@ public class UI extends javax.swing.JFrame {
         txtFileName.setText(savePath);
         jScrollFilePath.setViewportView(txtFileName);
 
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(160, 200));
-
         txtPerf.setEditable(false);
         txtPerf.setColumns(12);
         txtPerf.setRows(5);
-        txtPerf.setPreferredSize(new java.awt.Dimension(150, 100));
         jScrollPane3.setViewportView(txtPerf);
 
         btnOpen.setText("Open");
@@ -388,16 +391,16 @@ public class UI extends javax.swing.JFrame {
             .addGroup(MainPanelLayout.createSequentialGroup()
                 .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(MainPanelLayout.createSequentialGroup()
                                 .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTxtPermText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTxtPermText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollTxtLog)
@@ -456,7 +459,7 @@ public class UI extends javax.swing.JFrame {
                             .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(MainPanelLayout.createSequentialGroup()
@@ -592,6 +595,8 @@ public class UI extends javax.swing.JFrame {
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         p.stop();
         u.updatePerf();
+//        ses.shutdown();
+        MainPanel.setBackground((new Color(240, 240, 240)));
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
         }
@@ -599,6 +604,7 @@ public class UI extends javax.swing.JFrame {
             jc.setEnabled(false);
         }
         this.setTitle(portNames[cboxCOMList.getSelectedIndex()] + " " + ver);
+
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordActionPerformed
@@ -618,6 +624,8 @@ public class UI extends javax.swing.JFrame {
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
+
+//            ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
         }
     }//GEN-LAST:event_btnRecordActionPerformed
 
@@ -690,30 +698,37 @@ public class UI extends javax.swing.JFrame {
             Arrays.stream(currSta[0]).sum();
             if (Arrays.stream(currSta[0]).sum() + Arrays.stream(currSta[1]).sum() > 0) {
                 perfHist.add(currSta);
-                String perf = "";
-                for (int i = perfHist.size(); i > 0; i--) {
-                    perf += "S" + String.format("%2d", i) + ",";
+                final StringBuilder perf = new StringBuilder();
+                for (int i = 0; i < perfHist.size(); i++) {
+                    perf.append("S").append(String.format("%2d", i)).append(",");
                     int idx = i - 1;
                     int[][] histSta = perfHist.get(idx);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
 
-                    perf += "P" + String.format("%3d", performance) + ",";
-                    perf += "H" + String.format("%2d", histSta[0][0]) + ",";
-                    perf += "M" + String.format("%2d", histSta[0][1]) + ",";
-                    perf += "F" + String.format("%2d", histSta[0][2]) + ",";
-                    perf += "C" + String.format("%2d", histSta[0][3]) + "\r\n";
+                    perf.append("P").append(String.format("%3d", performance)).append(",")
+                            .append("H").append(String.format("%2d", histSta[0][0])).append(",")
+                            .append("M").append(String.format("%2d", histSta[0][1])).append(",")
+                            .append("F").append(String.format("%2d", histSta[0][2])).append(",")
+                            .append("C").append(String.format("%2d", histSta[0][3])).append("\r\n");
                     if (histSta[1][0] + histSta[1][1] + histSta[1][2] + histSta[1][3] > 0) {
-                        perf += "-->R,H" + String.format("%2d", histSta[1][0]) + ",";
-                        perf += "M" + String.format("%2d", histSta[1][1]) + ",";
-                        perf += "F" + String.format("%2d", histSta[1][2]) + ",";
-                        perf += "C" + String.format("%2d", histSta[1][3]) + "\r\n\r\n";
+                        perf.append("-->R,H").append(String.format("%2d", histSta[1][0])).append(",")
+                                .append("M").append(String.format("%2d", histSta[1][1])).append(",")
+                                .append("F").append(String.format("%2d", histSta[1][2])).append(",")
+                                .append("C").append(String.format("%2d", histSta[1][3])).append("\r\n\r\n");
                     }
                 }
-                txtPerf.setText(perf);
+                final String s = perf.toString();
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        txtPerf.setText(s);
+                    });
+                } catch (InterruptedException | InvocationTargetException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 if (update) {
                     try (BufferedWriter bw = new BufferedWriter(new FileWriter(statusFilePath))) {
-                        bw.write(perf);
+                        bw.write(s);
                     } catch (IOException ex) {
                         Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -723,21 +738,31 @@ public class UI extends javax.swing.JFrame {
         }
 
         private void updateCurrSta() {
-            String currStaStr = "";
-            currStaStr += "H" + String.format("%2d", currSta[0][0]) + "  ";
-            currStaStr += "M" + String.format("%2d", currSta[0][1]) + "  ";
-            currStaStr += "F" + String.format("%2d", currSta[0][2]) + "  ";
-            currStaStr += "C" + String.format("%2d", currSta[0][3]);
+            final StringBuilder currStaStr = new StringBuilder();
+            currStaStr.append("H").append(String.format("%2d", currSta[0][0])).append("  ")
+                    .append("M").append(String.format("%2d", currSta[0][1])).append("  ")
+                    .append("F").append(String.format("%2d", currSta[0][2])).append("  ")
+                    .append("C").append(String.format("%2d", currSta[0][3]));
             if (currSta[1][0] + currSta[1][1] + currSta[1][2] + currSta[1][3] > 0) {
-                currStaStr += "\r\nH" + String.format("%2d", currSta[1][0]) + "  ";
-                currStaStr += "M" + String.format("%2d", currSta[1][1]) + "  ";
-                currStaStr += "F" + String.format("%2d", currSta[1][2]) + "  ";
-                currStaStr += "C" + String.format("%2d", currSta[1][3]);
+                currStaStr.append("\r\nH").append(String.format("%2d", currSta[1][0])).append("  ")
+                        .append("M").append(String.format("%2d", currSta[1][1])).append("  ")
+                        .append("F").append(String.format("%2d", currSta[1][2])).append("  ")
+                        .append("C").append(String.format("%2d", currSta[1][3]));
             }
-            txtCurrPref.setText(currStaStr);
+            final String s = currStaStr.toString();
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    txtCurrPref.setText(s);
+                });
+            } catch (InterruptedException | InvocationTargetException ex) {
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         synchronized public void updateEvent(int[] event) {
+//            if (alarm) {
+//                alarm = false;
+//            }
             updateString(evt2Str(event));
 
             if (lickCountFlag > 0 && event[0] - lickCountTimeCount > 1000) {
@@ -812,10 +837,15 @@ public class UI extends javax.swing.JFrame {
             freqText.append("L:").append(lFreq).append(", ").append("LMax:").append(lFreqMax)
                     .append("; ")
                     .append("R:").append(rFreq).append(", ").append("RMax:").append(rFreqMax);
-            SwingUtilities.invokeLater(
-                    () -> {
-                        jTxtLickFreq.setText(freqText.toString());
-                    });
+            final String s = freqText.toString();
+            try {
+                SwingUtilities.invokeAndWait(
+                        () -> {
+                            jTxtLickFreq.setText(s);
+                        });
+            } catch (InterruptedException | InvocationTargetException ex) {
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         synchronized public void updateString(String str) {
@@ -823,16 +853,26 @@ public class UI extends javax.swing.JFrame {
             while (logTxt.length() > 500) {
                 logTxt.delete(0, logTxt.indexOf("\r\n") + 2);
             }
-            SwingUtilities.invokeLater(
-                    () -> {
-                        txtLog.setText(logTxt.toString());
-                    });
+            final String s = logTxt.toString();
+            try {
+                SwingUtilities.invokeAndWait(
+                        () -> {
+                            txtLog.setText(s);
+                        });
+            } catch (InterruptedException | InvocationTargetException ex) {
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         private void updatePermString(int evt) {
-            SwingUtilities.invokeLater(() -> {
-                jTxtPermText.setText(eventNames.getMessage(evt));
-            });
+            final String s = eventNames.getMessage(evt);
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    jTxtPermText.setText(s);
+                });
+            } catch (InterruptedException | InvocationTargetException ex) {
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         private String evt2Str(int[] evt) {
@@ -868,6 +908,27 @@ public class UI extends javax.swing.JFrame {
         return Long.parseLong(processName.split("@")[0]);
     }
 
+//    class Alarm implements Runnable {
+//
+//        @Override
+//        public void run() {
+//            if (alarm) {
+//                SwingUtilities.invokeLater(
+//                        () -> {
+//                            MainPanel.setBackground(Color.red);
+//                        });
+//            } else {
+//                SwingUtilities.invokeLater(
+//                        () -> {
+//                            MainPanel.setBackground((new Color(240, 240, 240)));
+//                        });
+//
+//            }
+//            alarm = true;
+//
+//        }
+//
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel MainPanel;
@@ -906,5 +967,6 @@ public class UI extends javax.swing.JFrame {
 
     private final JComponent[] btnEnableGrp;
     private final JComponent[] btnDisableGrp;
-
+    boolean alarm = false;
+//    ScheduledExecutorService ses;
 }
