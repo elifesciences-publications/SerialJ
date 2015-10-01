@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
@@ -35,12 +36,12 @@ import jssc.SerialPortList;
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame {
-
+    
     final private String[] portNames;
     private LogUpdator u;
     private PortReader p;
     private String statusFilePath;
-    final private String ver = "ZX Serial 1.72 @" + getPID();
+    final private String ver = "ZX Serial 1.72b @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2014\\";
     final private String[] expLists;
@@ -49,7 +50,7 @@ public class UI extends javax.swing.JFrame {
      * Creates new form UI
      */
     public UI() {
-
+        
         try {
             initLogger();
             this.setIconImage(ImageIO.read(getClass().getResource("/rsrc/icon.png")));
@@ -69,14 +70,14 @@ public class UI extends javax.swing.JFrame {
         u = new LogUpdator();
         expLists = flib.getExperimentConditions();
         initComponents();
-
+        
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
             jButton6, jButton7, jButton8, jButton9, chkReset, btnStop};
         btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash};
         txtFileName.setEditable(true);
-//        ses = new ScheduledThreadPoolExecutor(1);
+        ses = new ScheduledThreadPoolExecutor(1);
     }
-
+    
     private void initLogger() throws IOException {
         Logger rootLogger = Logger.getLogger("");
         rootLogger.setLevel(Level.FINE);
@@ -529,7 +530,7 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void chkResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkResetActionPerformed
-
+        
         jButtonReset.setEnabled(chkReset.isSelected());
     }//GEN-LAST:event_chkResetActionPerformed
 
@@ -566,8 +567,6 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTypeActionPerformed
 
     private void btnDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDateActionPerformed
-        //        Calendar cal = Calendar.getInstance();
-        //        txtFileName.append("_" + cal.get(Calendar.YEAR) + "_" + cal.get(Calendar.MONTH) + "_" + cal.get(Calendar.DATE) + "_");
         SimpleDateFormat fmt = new SimpleDateFormat("_yyyy_MM_dd_");
         txtFileName.append(fmt.format(new Date()));
     }//GEN-LAST:event_btnDateActionPerformed
@@ -595,7 +594,9 @@ public class UI extends javax.swing.JFrame {
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         p.stop();
         u.updatePerf();
-//        ses.shutdown();
+        if (null!=f && !f.isCancelled()){
+            f.cancel(true);
+        }
         MainPanel.setBackground((new Color(240, 240, 240)));
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
@@ -611,7 +612,7 @@ public class UI extends javax.swing.JFrame {
         if (cboxCOMList.getSelectedIndex() < 0) {
             return;
         }
-
+        
         p = new PortReader(portNames[cboxCOMList.getSelectedIndex()]);
         p.setUpdater(u);
         if (p.setFileToPath(txtFileName.getText()) && p.start()) {
@@ -624,8 +625,8 @@ public class UI extends javax.swing.JFrame {
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
-
-//            ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
+            
+            f=ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
         }
     }//GEN-LAST:event_btnRecordActionPerformed
 
@@ -667,9 +668,9 @@ public class UI extends javax.swing.JFrame {
             new UI().setVisible(true);
         });
     }
-
+    
     public class LogUpdator {
-
+        
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean update;
@@ -683,7 +684,7 @@ public class UI extends javax.swing.JFrame {
         private int lickCountFlag = 0;
         private int lickCountTimeCount;
         private int[] lickCount = new int[4];
-
+        
         public LogUpdator() {
             logTxt = new StringBuilder();
             logTxt.ensureCapacity(500);
@@ -693,19 +694,18 @@ public class UI extends javax.swing.JFrame {
             update = (new File(statusFileParent)).exists();
             freqText = new StringBuilder();
         }
-
+        
         public void updatePerf() {
             Arrays.stream(currSta[0]).sum();
             if (Arrays.stream(currSta[0]).sum() + Arrays.stream(currSta[1]).sum() > 0) {
                 perfHist.add(currSta);
                 final StringBuilder perf = new StringBuilder();
                 for (int i = 0; i < perfHist.size(); i++) {
-                    perf.append("S").append(String.format("%2d", i)).append(",");
-                    int idx = i - 1;
-                    int[][] histSta = perfHist.get(idx);
+                    perf.append("S").append(String.format("%2d", i + 1)).append(",");
+                    int[][] histSta = perfHist.get(i);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
-
+                    
                     perf.append("P").append(String.format("%3d", performance)).append(",")
                             .append("H").append(String.format("%2d", histSta[0][0])).append(",")
                             .append("M").append(String.format("%2d", histSta[0][1])).append(",")
@@ -736,7 +736,7 @@ public class UI extends javax.swing.JFrame {
                 currSta = new int[2][4];
             }
         }
-
+        
         private void updateCurrSta() {
             final StringBuilder currStaStr = new StringBuilder();
             currStaStr.append("H").append(String.format("%2d", currSta[0][0])).append("  ")
@@ -758,13 +758,22 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         synchronized public void updateEvent(int[] event) {
-//            if (alarm) {
-//                alarm = false;
-//            }
+            if (alarm) {
+                alarm = false;
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        if (MainPanel.getBackground().equals(Color.red)) {
+                            MainPanel.setBackground(new Color(240, 240, 240));
+                        }
+                    });
+                } catch (InterruptedException | InvocationTargetException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             updateString(evt2Str(event));
-
+            
             if (lickCountFlag > 0 && event[0] - lickCountTimeCount > 1000) {
                 switch (lickCountFlag) {
                     case 1:
@@ -779,7 +788,7 @@ public class UI extends javax.swing.JFrame {
                 updateFreq();
                 lickCountFlag = 0;
             }
-
+            
             switch (event[2]) {
                 case 0:
                     if (lickCountFlag > 0) {
@@ -825,10 +834,10 @@ public class UI extends javax.swing.JFrame {
                         updatePerf();
                     }
                     break;
-
+                
             }
         }
-
+        
         synchronized private void updateFreq() {
 //            if (lFreqMax + rFreqMax == 0) {
 //                return;
@@ -847,7 +856,7 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         synchronized public void updateString(String str) {
             logTxt.append(str).append("\r\n");
             while (logTxt.length() > 500) {
@@ -863,7 +872,7 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         private void updatePermString(int evt) {
             final String s = eventNames.getMessage(evt);
             try {
@@ -874,7 +883,7 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         private String evt2Str(int[] evt) {
             switch (evt[1]) {
                 case 0x55:
@@ -889,7 +898,7 @@ public class UI extends javax.swing.JFrame {
                     return "unknown";
             }
         }
-
+        
         public void clearFreq() {
             lFreq = 0;
             rFreq = 0;
@@ -901,34 +910,30 @@ public class UI extends javax.swing.JFrame {
                     });
         }
     }
-
+    
     private long getPID() {
         String processName
                 = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
         return Long.parseLong(processName.split("@")[0]);
     }
-
-//    class Alarm implements Runnable {
-//
-//        @Override
-//        public void run() {
-//            if (alarm) {
-//                SwingUtilities.invokeLater(
-//                        () -> {
-//                            MainPanel.setBackground(Color.red);
-//                        });
-//            } else {
-//                SwingUtilities.invokeLater(
-//                        () -> {
-//                            MainPanel.setBackground((new Color(240, 240, 240)));
-//                        });
-//
-//            }
-//            alarm = true;
-//
-//        }
-//
-//    }
+    
+    class Alarm implements Runnable {
+        
+        @Override
+        public void run() {
+            if (alarm) {
+                try {
+                    SwingUtilities.invokeAndWait(
+                            () -> {
+                                MainPanel.setBackground(Color.red);
+                            });
+                } catch (InterruptedException | InvocationTargetException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            alarm = true;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel MainPanel;
@@ -968,5 +973,6 @@ public class UI extends javax.swing.JFrame {
     private final JComponent[] btnEnableGrp;
     private final JComponent[] btnDisableGrp;
     boolean alarm = false;
-//    ScheduledExecutorService ses;
+    ScheduledExecutorService ses;
+    ScheduledFuture f;
 }
