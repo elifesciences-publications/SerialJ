@@ -14,14 +14,14 @@ import jssc.SerialPortException;
  *
  * @author Xiaoxing
  */
-public class PortReader {
+public class PortAccessor {
 
     private SerialPort serialPort;
     final private DataParser dp;
     final private String portName;
     private UI.LogUpdator updator;
 
-    public PortReader(String s) {
+    public PortAccessor(String s) {
         this.portName = s;
         dp = new DataParser();
     }

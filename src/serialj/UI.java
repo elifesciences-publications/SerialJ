@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import jssc.SerialPortList;
 
@@ -36,12 +38,12 @@ import jssc.SerialPortList;
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame {
-    
+
     final private String[] portNames;
     private LogUpdator u;
-    private PortReader p;
+    private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial 1.72b @" + getPID();
+    final private String ver = "ZX Serial 1.73 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2014\\";
     final private String[] expLists;
@@ -50,10 +52,12 @@ public class UI extends javax.swing.JFrame {
      * Creates new form UI
      */
     public UI() {
-        
+
         try {
             initLogger();
-            this.setIconImage(ImageIO.read(getClass().getResource("/rsrc/icon.png")));
+            URL iconUrl = getClass().getResource("/rsrc/icon.png");
+            System.out.println(iconUrl.toString());
+            this.setIconImage(ImageIO.read(iconUrl));
         } catch (IOException ex) {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -70,14 +74,14 @@ public class UI extends javax.swing.JFrame {
         u = new LogUpdator();
         expLists = flib.getExperimentConditions();
         initComponents();
-        
+
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
-            jButton6, jButton7, jButton8, jButton9, chkReset, btnStop};
+            jButton6, jButton7, jButton8, jButton9, btnStop, jButtonReset, btnScript};
         btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash};
         txtFileName.setEditable(true);
         ses = new ScheduledThreadPoolExecutor(1);
     }
-    
+
     private void initLogger() throws IOException {
         Logger rootLogger = Logger.getLogger("");
         rootLogger.setLevel(Level.FINE);
@@ -95,412 +99,604 @@ public class UI extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        MainPanel = new javax.swing.JPanel();
+        TopPanel = new javax.swing.JPanel();
         cboxCOMList = new javax.swing.JComboBox();
         btnRecord = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
-        jScrollTxtLog = new javax.swing.JScrollPane();
-        txtLog = new javax.swing.JTextArea();
-        jScrollFilePath = new javax.swing.JScrollPane();
-        txtFileName = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txtPerf = new javax.swing.JTextArea();
         btnOpen = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
+        jScrollFilePath = new javax.swing.JScrollPane();
+        txtFileName = new javax.swing.JTextArea();
+        lblEmpty = new javax.swing.JLabel();
+        LBPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtPerf = new javax.swing.JTextArea();
         btnDate = new javax.swing.JButton();
         btnType = new javax.swing.JButton();
         btnSlash = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtCurrPref = new javax.swing.JTextArea();
+        jTxtPermText = new javax.swing.JTextField();
+        RBPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
-        chkReset = new javax.swing.JCheckBox();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton0 = new javax.swing.JButton();
-        jTxtPermText = new javax.swing.JTextField();
+        jScrollTxtLog = new javax.swing.JScrollPane();
+        txtLog = new javax.swing.JTextArea();
         jTxtLickFreq = new javax.swing.JTextField();
         jButtonClearLickFreq = new javax.swing.JButton();
+        btnScript = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
+        setMaximumSize(new java.awt.Dimension(512, 2147483647));
+        setMinimumSize(new java.awt.Dimension(300, 240));
+        setPreferredSize(new java.awt.Dimension(375, 336));
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        MainPanel.setPreferredSize(new java.awt.Dimension(335, 310));
+        TopPanel.setMinimumSize(new java.awt.Dimension(350, 80));
+        TopPanel.setPreferredSize(new java.awt.Dimension(350, 80));
+        TopPanel.setLayout(new java.awt.GridBagLayout());
 
         cboxCOMList.setModel(new javax.swing.DefaultComboBoxModel(portNames));
+        cboxCOMList.setMinimumSize(new java.awt.Dimension(70, 24));
+        cboxCOMList.setPreferredSize(new java.awt.Dimension(70, 24));
         cboxCOMList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboxCOMListActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(cboxCOMList, gridBagConstraints);
 
         btnRecord.setText("|>");
-        btnRecord.setPreferredSize(new java.awt.Dimension(45, 20));
+        btnRecord.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnRecord.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnRecord.setMinimumSize(new java.awt.Dimension(55, 24));
+        btnRecord.setPreferredSize(new java.awt.Dimension(55, 24));
         btnRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRecordActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(btnRecord, gridBagConstraints);
 
         btnStop.setText("[]");
         btnStop.setEnabled(false);
-        btnStop.setMaximumSize(new java.awt.Dimension(45, 23));
-        btnStop.setMinimumSize(new java.awt.Dimension(45, 23));
-        btnStop.setPreferredSize(new java.awt.Dimension(45, 20));
+        btnStop.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnStop.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnStop.setMinimumSize(new java.awt.Dimension(55, 24));
+        btnStop.setPreferredSize(new java.awt.Dimension(55, 24));
         btnStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStopActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(btnStop, gridBagConstraints);
 
-        txtLog.setEditable(false);
-        txtLog.setColumns(12);
-        txtLog.setRows(5);
-        jScrollTxtLog.setViewportView(txtLog);
+        btnOpen.setText("Open");
+        btnOpen.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnOpen.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnOpen.setMinimumSize(new java.awt.Dimension(55, 24));
+        btnOpen.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(btnOpen, gridBagConstraints);
+
+        btnClear.setText("Clear");
+        btnClear.setEnabled(false);
+        btnClear.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnClear.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnClear.setMinimumSize(new java.awt.Dimension(55, 24));
+        btnClear.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(btnClear, gridBagConstraints);
+
+        jScrollFilePath.setMinimumSize(new java.awt.Dimension(200, 48));
+        jScrollFilePath.setPreferredSize(new java.awt.Dimension(370, 60));
 
         txtFileName.setColumns(20);
         txtFileName.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         txtFileName.setLineWrap(true);
         txtFileName.setRows(2);
         txtFileName.setText(savePath);
+        txtFileName.setMinimumSize(new java.awt.Dimension(200, 100));
+        txtFileName.setPreferredSize(null);
         jScrollFilePath.setViewportView(txtFileName);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 2;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(jScrollFilePath, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 1.0;
+        TopPanel.add(lblEmpty, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
+        getContentPane().add(TopPanel, gridBagConstraints);
+
+        LBPanel.setMinimumSize(new java.awt.Dimension(100, 100));
+        LBPanel.setPreferredSize(new java.awt.Dimension(190, 240));
+        LBPanel.setLayout(new java.awt.GridBagLayout());
+
+        jScrollPane3.setMinimumSize(new java.awt.Dimension(100, 100));
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(100, 145));
 
         txtPerf.setEditable(false);
         txtPerf.setColumns(12);
         txtPerf.setRows(5);
         jScrollPane3.setViewportView(txtPerf);
 
-        btnOpen.setText("Open");
-        btnOpen.setMaximumSize(new java.awt.Dimension(70, 23));
-        btnOpen.setMinimumSize(new java.awt.Dimension(70, 23));
-        btnOpen.setPreferredSize(new java.awt.Dimension(66, 20));
-        btnOpen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpenActionPerformed(evt);
-            }
-        });
-
-        btnClear.setText("Clear");
-        btnClear.setEnabled(false);
-        btnClear.setMaximumSize(new java.awt.Dimension(70, 23));
-        btnClear.setMinimumSize(new java.awt.Dimension(70, 23));
-        btnClear.setPreferredSize(new java.awt.Dimension(66, 20));
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
-            }
-        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        LBPanel.add(jScrollPane3, gridBagConstraints);
 
         btnDate.setText("Date");
         btnDate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnDate.setMaximumSize(new java.awt.Dimension(40, 23));
-        btnDate.setMinimumSize(new java.awt.Dimension(40, 23));
-        btnDate.setPreferredSize(new java.awt.Dimension(40, 23));
+        btnDate.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnDate.setMinimumSize(new java.awt.Dimension(40, 24));
+        btnDate.setPreferredSize(new java.awt.Dimension(50, 24));
         btnDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDateActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        LBPanel.add(btnDate, gridBagConstraints);
 
         btnType.setText("Type");
         btnType.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnType.setMaximumSize(new java.awt.Dimension(30, 23));
-        btnType.setMinimumSize(new java.awt.Dimension(30, 23));
-        btnType.setPreferredSize(new java.awt.Dimension(30, 23));
+        btnType.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnType.setMinimumSize(new java.awt.Dimension(40, 24));
+        btnType.setPreferredSize(new java.awt.Dimension(50, 24));
         btnType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTypeActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        LBPanel.add(btnType, gridBagConstraints);
 
         btnSlash.setText(File.separator);
         btnSlash.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnSlash.setMaximumSize(new java.awt.Dimension(25, 23));
-        btnSlash.setMinimumSize(new java.awt.Dimension(25, 23));
-        btnSlash.setPreferredSize(new java.awt.Dimension(25, 23));
+        btnSlash.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnSlash.setMinimumSize(new java.awt.Dimension(40, 24));
+        btnSlash.setPreferredSize(new java.awt.Dimension(50, 24));
         btnSlash.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSlashActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        LBPanel.add(btnSlash, gridBagConstraints);
 
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane4.setPreferredSize(new java.awt.Dimension(160, 46));
+        jScrollPane4.setMinimumSize(new java.awt.Dimension(100, 45));
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(150, 45));
 
         txtCurrPref.setEditable(false);
         txtCurrPref.setColumns(20);
         txtCurrPref.setRows(2);
-        txtCurrPref.setPreferredSize(new java.awt.Dimension(150, 44));
+        txtCurrPref.setMinimumSize(null);
+        txtCurrPref.setPreferredSize(null);
         jScrollPane4.setViewportView(txtCurrPref);
 
-        jButton1.setText("1");
-        jButton1.setEnabled(false);
-        jButton1.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("2");
-        jButton2.setEnabled(false);
-        jButton2.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("3");
-        jButton3.setEnabled(false);
-        jButton3.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText("4");
-        jButton4.setEnabled(false);
-        jButton4.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setText("5");
-        jButton5.setEnabled(false);
-        jButton5.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jButtonReset.setText("RESET");
-        jButtonReset.setEnabled(false);
-        jButtonReset.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButtonReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonResetActionPerformed(evt);
-            }
-        });
-
-        chkReset.setEnabled(false);
-        chkReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkResetActionPerformed(evt);
-            }
-        });
-
-        jButton6.setText("6");
-        jButton6.setEnabled(false);
-        jButton6.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setText("7");
-        jButton7.setEnabled(false);
-        jButton7.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
-        jButton8.setText("8");
-        jButton8.setEnabled(false);
-        jButton8.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-
-        jButton9.setText("9");
-        jButton9.setEnabled(false);
-        jButton9.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        jButton0.setText("0");
-        jButton0.setEnabled(false);
-        jButton0.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButton0.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton0ActionPerformed(evt);
-            }
-        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        LBPanel.add(jScrollPane4, gridBagConstraints);
 
         jTxtPermText.setEditable(false);
         jTxtPermText.setBackground(new java.awt.Color(255, 255, 255));
-        jTxtPermText.setPreferredSize(new java.awt.Dimension(160, 20));
+        jTxtPermText.setMinimumSize(new java.awt.Dimension(100, 24));
+        jTxtPermText.setPreferredSize(new java.awt.Dimension(150, 24));
         jTxtPermText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTxtPermTextActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        LBPanel.add(jTxtPermText, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.weightx = 0.45;
+        gridBagConstraints.weighty = 0.9;
+        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
+        getContentPane().add(LBPanel, gridBagConstraints);
+
+        RBPanel.setMinimumSize(new java.awt.Dimension(100, 100));
+        RBPanel.setPreferredSize(new java.awt.Dimension(180, 240));
+        RBPanel.setLayout(new java.awt.GridBagLayout());
+
+        jButton1.setText("1");
+        jButton1.setEnabled(false);
+        jButton1.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton1.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton1.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton1.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton1, gridBagConstraints);
+
+        jButton2.setText("2");
+        jButton2.setEnabled(false);
+        jButton2.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton2.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton2.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton2.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton2, gridBagConstraints);
+
+        jButton3.setText("3");
+        jButton3.setEnabled(false);
+        jButton3.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton3.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton3.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton3.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton3, gridBagConstraints);
+
+        jButton4.setText("4");
+        jButton4.setEnabled(false);
+        jButton4.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton4.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton4.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton4.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton4, gridBagConstraints);
+
+        jButton5.setText("5");
+        jButton5.setEnabled(false);
+        jButton5.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton5.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton5.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton5.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton5, gridBagConstraints);
+
+        jButtonReset.setText("RESET");
+        jButtonReset.setEnabled(false);
+        jButtonReset.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButtonReset.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        jButtonReset.setMinimumSize(new java.awt.Dimension(40, 24));
+        jButtonReset.setPreferredSize(new java.awt.Dimension(55, 24));
+        jButtonReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonResetActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButtonReset, gridBagConstraints);
+
+        jButton6.setText("6");
+        jButton6.setEnabled(false);
+        jButton6.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton6.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton6.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton6.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton6, gridBagConstraints);
+
+        jButton7.setText("7");
+        jButton7.setEnabled(false);
+        jButton7.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton7.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton7.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton7.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton7, gridBagConstraints);
+
+        jButton8.setText("8");
+        jButton8.setEnabled(false);
+        jButton8.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton8.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton8.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton8.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton8, gridBagConstraints);
+
+        jButton9.setText("9");
+        jButton9.setEnabled(false);
+        jButton9.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton9.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton9.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton9.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton9, gridBagConstraints);
+
+        jButton0.setText("0");
+        jButton0.setEnabled(false);
+        jButton0.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton0.setMaximumSize(new java.awt.Dimension(15, 24));
+        jButton0.setMinimumSize(new java.awt.Dimension(15, 24));
+        jButton0.setPreferredSize(new java.awt.Dimension(15, 24));
+        jButton0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton0ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButton0, gridBagConstraints);
+
+        jScrollTxtLog.setMinimumSize(new java.awt.Dimension(100, 200));
+        jScrollTxtLog.setPreferredSize(new java.awt.Dimension(100, 200));
+
+        txtLog.setEditable(false);
+        txtLog.setColumns(12);
+        txtLog.setRows(5);
+        txtLog.setPreferredSize(null);
+        jScrollTxtLog.setViewportView(txtLog);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jScrollTxtLog, gridBagConstraints);
 
         jTxtLickFreq.setEditable(false);
         jTxtLickFreq.setBackground(new java.awt.Color(255, 255, 255));
-        jTxtLickFreq.setPreferredSize(new java.awt.Dimension(135, 20));
+        jTxtLickFreq.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        jTxtLickFreq.setMinimumSize(new java.awt.Dimension(100, 24));
+        jTxtLickFreq.setPreferredSize(new java.awt.Dimension(135, 24));
         jTxtLickFreq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTxtLickFreqActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.25;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jTxtLickFreq, gridBagConstraints);
 
         jButtonClearLickFreq.setText("C");
         jButtonClearLickFreq.setMargin(new java.awt.Insets(2, 0, 2, 0));
-        jButtonClearLickFreq.setPreferredSize(new java.awt.Dimension(20, 23));
+        jButtonClearLickFreq.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        jButtonClearLickFreq.setMinimumSize(new java.awt.Dimension(40, 24));
+        jButtonClearLickFreq.setPreferredSize(new java.awt.Dimension(55, 24));
         jButtonClearLickFreq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonClearLickFreqActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(jButtonClearLickFreq, gridBagConstraints);
 
-        javax.swing.GroupLayout MainPanelLayout = new javax.swing.GroupLayout(MainPanel);
-        MainPanel.setLayout(MainPanelLayout);
-        MainPanelLayout.setHorizontalGroup(
-            MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(MainPanelLayout.createSequentialGroup()
-                .addComponent(cboxCOMList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRecord, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(MainPanelLayout.createSequentialGroup()
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(MainPanelLayout.createSequentialGroup()
-                                .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTxtPermText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollTxtLog)
-                            .addGroup(MainPanelLayout.createSequentialGroup()
-                                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(MainPanelLayout.createSequentialGroup()
-                                        .addComponent(jButton6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton0)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButtonReset))
-                                    .addGroup(MainPanelLayout.createSequentialGroup()
-                                        .addComponent(jButton1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(chkReset))
-                                    .addGroup(MainPanelLayout.createSequentialGroup()
-                                        .addComponent(jTxtLickFreq, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButtonClearLickFreq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(1, 1, 1))))
-                    .addComponent(jScrollFilePath))
-                .addGap(2, 2, 2))
-        );
-        MainPanelLayout.setVerticalGroup(
-            MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(MainPanelLayout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnStop, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRecord, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboxCOMList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollFilePath, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnSlash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(MainPanelLayout.createSequentialGroup()
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4)
-                            .addComponent(jButton5)
-                            .addComponent(chkReset))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton6)
-                            .addComponent(jButton7)
-                            .addComponent(jButton8)
-                            .addComponent(jButton9)
-                            .addComponent(jButton0)
-                            .addComponent(jButtonReset))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollTxtLog, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTxtPermText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTxtLickFreq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonClearLickFreq, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(1, 1, 1))
-        );
+        btnScript.setText("Script");
+        btnScript.setEnabled(false);
+        btnScript.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnScript.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnScript.setMinimumSize(new java.awt.Dimension(40, 24));
+        btnScript.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnScript.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnScriptActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        RBPanel.add(btnScript, gridBagConstraints);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 2;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.weightx = 0.55;
+        gridBagConstraints.weighty = 0.9;
+        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
+        getContentPane().add(RBPanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -528,11 +724,6 @@ public class UI extends javax.swing.JFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         p.writeByte((byte) 0x36);
     }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void chkResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkResetActionPerformed
-        
-        jButtonReset.setEnabled(chkReset.isSelected());
-    }//GEN-LAST:event_chkResetActionPerformed
 
     private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
         p.writeByte((byte) 0x2a);
@@ -594,10 +785,10 @@ public class UI extends javax.swing.JFrame {
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         p.stop();
         u.updatePerf();
-        if (null!=f && !f.isCancelled()){
-            f.cancel(true);
+        if (null != redBgTimerTask && !redBgTimerTask.isCancelled()) {
+            redBgTimerTask.cancel(true);
         }
-        MainPanel.setBackground((new Color(240, 240, 240)));
+        LBPanel.setBackground((new Color(240, 240, 240)));
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
         }
@@ -612,8 +803,8 @@ public class UI extends javax.swing.JFrame {
         if (cboxCOMList.getSelectedIndex() < 0) {
             return;
         }
-        
-        p = new PortReader(portNames[cboxCOMList.getSelectedIndex()]);
+
+        p = new PortAccessor(portNames[cboxCOMList.getSelectedIndex()]);
         p.setUpdater(u);
         if (p.setFileToPath(txtFileName.getText()) && p.start()) {
             for (JComponent jc : btnDisableGrp) {
@@ -625,8 +816,8 @@ public class UI extends javax.swing.JFrame {
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
-            
-            f=ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
+
+            redBgTimerTask = ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
         }
     }//GEN-LAST:event_btnRecordActionPerformed
 
@@ -641,6 +832,16 @@ public class UI extends javax.swing.JFrame {
     private void jButtonClearLickFreqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClearLickFreqActionPerformed
         u.clearFreq();
     }//GEN-LAST:event_jButtonClearLickFreqActionPerformed
+
+    private void btnScriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScriptActionPerformed
+        JFileChooser fc = new JFileChooser();
+        int result = fc.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File f = fc.getSelectedFile();
+                ScriptExecutor se=new ScriptExecutor(f,p);
+                (new Thread(se)).start();
+        }
+    }//GEN-LAST:event_btnScriptActionPerformed
 
     /**
      * @param args the command line arguments
@@ -668,9 +869,9 @@ public class UI extends javax.swing.JFrame {
             new UI().setVisible(true);
         });
     }
-    
+
     public class LogUpdator {
-        
+
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean update;
@@ -684,7 +885,7 @@ public class UI extends javax.swing.JFrame {
         private int lickCountFlag = 0;
         private int lickCountTimeCount;
         private int[] lickCount = new int[4];
-        
+
         public LogUpdator() {
             logTxt = new StringBuilder();
             logTxt.ensureCapacity(500);
@@ -694,7 +895,7 @@ public class UI extends javax.swing.JFrame {
             update = (new File(statusFileParent)).exists();
             freqText = new StringBuilder();
         }
-        
+
         public void updatePerf() {
             Arrays.stream(currSta[0]).sum();
             if (Arrays.stream(currSta[0]).sum() + Arrays.stream(currSta[1]).sum() > 0) {
@@ -705,7 +906,7 @@ public class UI extends javax.swing.JFrame {
                     int[][] histSta = perfHist.get(i);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
-                    
+
                     perf.append("P").append(String.format("%3d", performance)).append(",")
                             .append("H").append(String.format("%2d", histSta[0][0])).append(",")
                             .append("M").append(String.format("%2d", histSta[0][1])).append(",")
@@ -736,7 +937,7 @@ public class UI extends javax.swing.JFrame {
                 currSta = new int[2][4];
             }
         }
-        
+
         private void updateCurrSta() {
             final StringBuilder currStaStr = new StringBuilder();
             currStaStr.append("H").append(String.format("%2d", currSta[0][0])).append("  ")
@@ -758,14 +959,14 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         synchronized public void updateEvent(int[] event) {
             if (alarm) {
                 alarm = false;
                 try {
                     SwingUtilities.invokeAndWait(() -> {
-                        if (MainPanel.getBackground().equals(Color.red)) {
-                            MainPanel.setBackground(new Color(240, 240, 240));
+                        if (LBPanel.getBackground().equals(Color.red)) {
+                            LBPanel.setBackground(new Color(240, 240, 240));
                         }
                     });
                 } catch (InterruptedException | InvocationTargetException ex) {
@@ -773,7 +974,7 @@ public class UI extends javax.swing.JFrame {
                 }
             }
             updateString(evt2Str(event));
-            
+
             if (lickCountFlag > 0 && event[0] - lickCountTimeCount > 1000) {
                 switch (lickCountFlag) {
                     case 1:
@@ -788,7 +989,7 @@ public class UI extends javax.swing.JFrame {
                 updateFreq();
                 lickCountFlag = 0;
             }
-            
+
             switch (event[2]) {
                 case 0:
                     if (lickCountFlag > 0) {
@@ -798,6 +999,13 @@ public class UI extends javax.swing.JFrame {
                 case 1:
                     if (event[1] == 0 && event[3] == 2 && event[4] == 3) {
                         updatePerf();
+                        jTxtPermText.setText("");
+                    } else {
+                        try {
+                            jTxtPermText.setText(jTxtPermText.getText() + Integer.toString(event[3]));
+                        } catch (Exception e) {
+                            System.out.println(e.toString());
+                        }
                     }
                     break;
                 case 4:
@@ -834,10 +1042,10 @@ public class UI extends javax.swing.JFrame {
                         updatePerf();
                     }
                     break;
-                
+
             }
         }
-        
+
         synchronized private void updateFreq() {
 //            if (lFreqMax + rFreqMax == 0) {
 //                return;
@@ -856,7 +1064,7 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         synchronized public void updateString(String str) {
             logTxt.append(str).append("\r\n");
             while (logTxt.length() > 500) {
@@ -872,7 +1080,7 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         private void updatePermString(int evt) {
             final String s = eventNames.getMessage(evt);
             try {
@@ -883,7 +1091,7 @@ public class UI extends javax.swing.JFrame {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         private String evt2Str(int[] evt) {
             switch (evt[1]) {
                 case 0x55:
@@ -898,7 +1106,7 @@ public class UI extends javax.swing.JFrame {
                     return "unknown";
             }
         }
-        
+
         public void clearFreq() {
             lFreq = 0;
             rFreq = 0;
@@ -910,22 +1118,22 @@ public class UI extends javax.swing.JFrame {
                     });
         }
     }
-    
+
     private long getPID() {
         String processName
                 = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
         return Long.parseLong(processName.split("@")[0]);
     }
-    
+
     class Alarm implements Runnable {
-        
+
         @Override
         public void run() {
             if (alarm) {
                 try {
                     SwingUtilities.invokeAndWait(
                             () -> {
-                                MainPanel.setBackground(Color.red);
+                                LBPanel.setBackground(Color.red);
                             });
                 } catch (InterruptedException | InvocationTargetException ex) {
                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
@@ -936,16 +1144,18 @@ public class UI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel MainPanel;
+    private javax.swing.JPanel LBPanel;
+    private javax.swing.JPanel RBPanel;
+    private javax.swing.JPanel TopPanel;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDate;
     private javax.swing.JButton btnOpen;
     private javax.swing.JButton btnRecord;
+    private javax.swing.JButton btnScript;
     private javax.swing.JButton btnSlash;
     private javax.swing.JButton btnStop;
     private javax.swing.JButton btnType;
     private javax.swing.JComboBox cboxCOMList;
-    private javax.swing.JCheckBox chkReset;
     private javax.swing.JButton jButton0;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -964,6 +1174,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollTxtLog;
     private javax.swing.JTextField jTxtLickFreq;
     private javax.swing.JTextField jTxtPermText;
+    private javax.swing.JLabel lblEmpty;
     private javax.swing.JTextArea txtCurrPref;
     private javax.swing.JTextArea txtFileName;
     private javax.swing.JTextArea txtLog;
@@ -974,5 +1185,5 @@ public class UI extends javax.swing.JFrame {
     private final JComponent[] btnDisableGrp;
     boolean alarm = false;
     ScheduledExecutorService ses;
-    ScheduledFuture f;
+    ScheduledFuture redBgTimerTask;
 }
