@@ -36,6 +36,9 @@ public class ScriptExecutor implements Runnable {
 
     @Override
     public void run() {
+        if ((!f.exists()) || f.isDirectory() || f.length() == 0 || f.length() > 32767) {
+            return;
+        }
         StringBuilder sum = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String s;
@@ -66,7 +69,7 @@ public class ScriptExecutor implements Runnable {
                         p.writeByte((byte) 0x33);
                         break;
                     case '4':
-                        p.writeByte((byte) 0x30);
+                        p.writeByte((byte) 0x34);
                         break;
                     case '5':
                         p.writeByte((byte) 0x35);

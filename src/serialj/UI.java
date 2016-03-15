@@ -789,7 +789,7 @@ public class UI extends javax.swing.JFrame {
         if (null != redBgTimerTask && !redBgTimerTask.isCancelled()) {
             redBgTimerTask.cancel(true);
         }
-        LBPanel.setBackground((new Color(240, 240, 240)));
+        TopPanel.setBackground((new Color(240, 240, 240)));
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
         }
@@ -837,6 +837,23 @@ public class UI extends javax.swing.JFrame {
     private void btnScriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScriptActionPerformed
         if (btnScript.isSelected()) {
             JFileChooser fc = new JFileChooser();
+            fc.setCurrentDirectory((new File(".")));
+            fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+                @Override
+                public String getDescription() {
+                    return "Script Files (.txt)";
+                }
+
+                @Override
+                public boolean accept(File f) {
+                    if (f.isDirectory() || f.getAbsolutePath().endsWith(".txt")) {
+                        return true;
+                    }
+                    return false;
+                }
+
+            });
             int result = fc.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File f = fc.getSelectedFile();
@@ -845,7 +862,9 @@ public class UI extends javax.swing.JFrame {
                 (new Thread(se)).start();
             }
         } else {
-            se.stop();
+            if (null != se) {
+                se.stop();
+            }
             u.updateString("Script stopped");
         }
     }//GEN-LAST:event_btnScriptActionPerformed
@@ -972,8 +991,8 @@ public class UI extends javax.swing.JFrame {
                 alarm = false;
                 try {
                     SwingUtilities.invokeAndWait(() -> {
-                        if (LBPanel.getBackground().equals(Color.red)) {
-                            LBPanel.setBackground(new Color(240, 240, 240));
+                        if (TopPanel.getBackground().equals(Color.red)) {
+                            TopPanel.setBackground(new Color(240, 240, 240));
                         }
                     });
                 } catch (InterruptedException | InvocationTargetException ex) {
@@ -1144,8 +1163,6 @@ public class UI extends javax.swing.JFrame {
                 try {
                     SwingUtilities.invokeAndWait(
                             () -> {
-                                LBPanel.setBackground(Color.red);
-                                RBPanel.setBackground(Color.red);
                                 TopPanel.setBackground(Color.red);
                             });
                 } catch (InterruptedException | InvocationTargetException ex) {
