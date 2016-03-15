@@ -43,7 +43,7 @@ public class UI extends javax.swing.JFrame {
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial 1.73 @" + getPID();
+    final private String ver = "ZX Serial 1.80 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2014\\";
     final private String[] expLists;
@@ -52,12 +52,10 @@ public class UI extends javax.swing.JFrame {
      * Creates new form UI
      */
     public UI() {
-
         try {
-            initLogger();
             URL iconUrl = getClass().getResource("/rsrc/icon.png");
-            System.out.println(iconUrl.toString());
             this.setIconImage(ImageIO.read(iconUrl));
+            initLogger();
         } catch (IOException ex) {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -135,17 +133,17 @@ public class UI extends javax.swing.JFrame {
         txtLog = new javax.swing.JTextArea();
         jTxtLickFreq = new javax.swing.JTextField();
         jButtonClearLickFreq = new javax.swing.JButton();
-        btnScript = new javax.swing.JButton();
+        btnScript = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
         setMaximumSize(new java.awt.Dimension(512, 2147483647));
         setMinimumSize(new java.awt.Dimension(300, 240));
-        setPreferredSize(new java.awt.Dimension(375, 336));
+        setPreferredSize(new java.awt.Dimension(375, 340));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        TopPanel.setMinimumSize(new java.awt.Dimension(350, 80));
-        TopPanel.setPreferredSize(new java.awt.Dimension(350, 80));
+        TopPanel.setMinimumSize(new java.awt.Dimension(350, 75));
+        TopPanel.setPreferredSize(new java.awt.Dimension(350, 75));
         TopPanel.setLayout(new java.awt.GridBagLayout());
 
         cboxCOMList.setModel(new javax.swing.DefaultComboBoxModel(portNames));
@@ -246,7 +244,7 @@ public class UI extends javax.swing.JFrame {
         txtFileName.setLineWrap(true);
         txtFileName.setRows(2);
         txtFileName.setText(savePath);
-        txtFileName.setMinimumSize(new java.awt.Dimension(200, 100));
+        txtFileName.setMinimumSize(new java.awt.Dimension(200, 60));
         txtFileName.setPreferredSize(null);
         jScrollFilePath.setViewportView(txtFileName);
 
@@ -682,8 +680,11 @@ public class UI extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.05;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         RBPanel.add(btnScript, gridBagConstraints);
 
@@ -834,12 +835,18 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonClearLickFreqActionPerformed
 
     private void btnScriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScriptActionPerformed
-        JFileChooser fc = new JFileChooser();
-        int result = fc.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File f = fc.getSelectedFile();
-                ScriptExecutor se=new ScriptExecutor(f,p);
+        if (btnScript.isSelected()) {
+            JFileChooser fc = new JFileChooser();
+            int result = fc.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File f = fc.getSelectedFile();
+                u.updateString("Running Script " + f.getName());
+                se = new ScriptExecutor(f, p);
                 (new Thread(se)).start();
+            }
+        } else {
+            se.stop();
+            u.updateString("Script stopped");
         }
     }//GEN-LAST:event_btnScriptActionPerformed
 
@@ -1071,13 +1078,17 @@ public class UI extends javax.swing.JFrame {
                 logTxt.delete(0, logTxt.indexOf("\r\n") + 2);
             }
             final String s = logTxt.toString();
-            try {
-                SwingUtilities.invokeAndWait(
-                        () -> {
-                            txtLog.setText(s);
-                        });
-            } catch (InterruptedException | InvocationTargetException ex) {
-                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            if (SwingUtilities.isEventDispatchThread()) {
+                txtLog.setText(s);
+            } else {
+                try {
+                    SwingUtilities.invokeAndWait(
+                            () -> {
+                                txtLog.setText(s);
+                            });
+                } catch (InterruptedException | InvocationTargetException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 
@@ -1134,6 +1145,8 @@ public class UI extends javax.swing.JFrame {
                     SwingUtilities.invokeAndWait(
                             () -> {
                                 LBPanel.setBackground(Color.red);
+                                RBPanel.setBackground(Color.red);
+                                TopPanel.setBackground(Color.red);
                             });
                 } catch (InterruptedException | InvocationTargetException ex) {
                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
@@ -1151,7 +1164,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JButton btnDate;
     private javax.swing.JButton btnOpen;
     private javax.swing.JButton btnRecord;
-    private javax.swing.JButton btnScript;
+    private javax.swing.JToggleButton btnScript;
     private javax.swing.JButton btnSlash;
     private javax.swing.JButton btnStop;
     private javax.swing.JButton btnType;
@@ -1186,4 +1199,5 @@ public class UI extends javax.swing.JFrame {
     boolean alarm = false;
     ScheduledExecutorService ses;
     ScheduledFuture redBgTimerTask;
+    ScriptExecutor se;
 }

@@ -62,7 +62,7 @@ public class PortAccessor {
         dp.stop();
     }
 
-    synchronized public boolean writeByte(byte b) {
+    public synchronized boolean writeByte(byte b) {
         try {
             return serialPort.writeByte(b);
         } catch (SerialPortException e) {
