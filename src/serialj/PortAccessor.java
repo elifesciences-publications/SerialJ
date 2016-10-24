@@ -55,11 +55,11 @@ public class PortAccessor {
 
     public void stop() {
         try {
+            dp.stop();
             serialPort.closePort();
-        } catch (SerialPortException ex) {
+        } catch (Exception ex) {
             updator.updateString(ex.toString() + "\r\n");
         }
-        dp.stop();
     }
 
     public synchronized boolean writeByte(byte b) {

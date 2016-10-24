@@ -9,7 +9,7 @@ package serialj;
  *
  * @author Xiaoxing
  */
-public class eventNames {
+public class EventNamesX {
 
     final static private String[] trans = new String[80];
     final static private String[] permMessage = new String[255];
@@ -154,7 +154,7 @@ public class eventNames {
 
         trans[69] = "FalseAlarm2";
 
-        trans[70] = "CorrectRejection2";
+        trans[70] = "FID";
 
         trans[71] = "Hit3";
 
@@ -174,8 +174,11 @@ public class eventNames {
 
         trans[79] = "LaserSwitch";
 
-        //List of Permenant Messages
-        
+        trans[83] = "OdorE";
+
+        trans[84] = "OdorF";
+
+        //List of Permanent Messages
         permMessage[0] = "loop1step2";
         permMessage[1] = "loop1step3";
         permMessage[2] = "loop2step2";
@@ -194,13 +197,13 @@ public class eventNames {
         permMessage[109] = "DMS LR bothOdor L+-";
         permMessage[110] = "DMS LR baseline L+-";
         permMessage[111] = "DMS LR response L+-";
-                
+
         return trans;
 
     }
 
     final public static String getMessage(int i) {
-        if (i >=0 && i <= 255) {
+        if (i >= 0 && i <= 255) {
             return permMessage[i];
         }
         return "";
