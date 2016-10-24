@@ -916,7 +916,7 @@ public class UI extends javax.swing.JFrame {
             logTxt = new StringBuilder();
             logTxt.ensureCapacity(500);
             perfHist = new ArrayList<>();
-            hName = EventNamesX.init();
+            hName = EventNames.init();
             currSta = new int[2][4];//Hit,Miss,False,Reject
             update = (new File(statusFileParent)).exists();
             freqText = new StringBuilder();
@@ -1112,7 +1112,7 @@ public class UI extends javax.swing.JFrame {
         }
 
         private void updatePermString(int evt) {
-            final String s = EventNamesX.getMessage(evt);
+            final String s = EventNames.getMessage(evt);
             try {
                 SwingUtilities.invokeAndWait(() -> {
                     jTxtPermText.setText(s);

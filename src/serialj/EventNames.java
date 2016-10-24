@@ -9,7 +9,7 @@ package serialj;
  *
  * @author Xiaoxing
  */
-public class EventNamesX {
+public class EventNames {
 
     final static private String[] trans = new String[80];
     final static private String[] permMessage = new String[255];
