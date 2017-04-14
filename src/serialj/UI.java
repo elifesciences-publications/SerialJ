@@ -1125,7 +1125,7 @@ public class UI extends javax.swing.JFrame {
         private String evt2Str(int[] evt) {
             switch (evt[1]) {
                 case 0x55:
-                    return Integer.toString(evt[0]) + "," + ((evt[2] > 79) ? evt[2] : hName[evt[2]]) + "," + Integer.toString(evt[3]);
+                    return Integer.toString(evt[0]) + "," + ((evt[2] > 85) ? evt[2] : hName[evt[2]]) + "," + Integer.toString(evt[3]);
                 case 0x00:
                     if (evt[2] == 0x01 && evt[3] == 0x02 && evt[4] == 0x03) {
                         return Integer.toString(evt[0]) + ", Manual Reset";

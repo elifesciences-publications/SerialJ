@@ -145,6 +145,7 @@ public class DataParser implements Runnable {
             }
 
         }
+
     }
 
     private void writeList(ArrayList<int[]> l, String pathToFile) {
@@ -162,6 +163,14 @@ public class DataParser implements Runnable {
 
     public void stop() {
         stop = true;
+        long millis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - millis < 400) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ie) {
+
+            }
+        }
         writeList(eventList, this.pathToFile);
     }
 
