@@ -62,9 +62,9 @@ public class EventNames {
 
         trans[22] = "S1S3";
 
-        trans[23] = "S1S4";
+        trans[23] = "High Value";
 
-        trans[24] = "S1S5";
+        trans[24] = "Low Value";
 
         trans[25] = "S2S1";
 
@@ -178,7 +178,7 @@ public class EventNames {
         
         trans[83] = "OdorE";
 
-        trans[84] = "OdorF";
+        trans[84] = "AbortTrial";
         
 
         //List of Permanent Messages

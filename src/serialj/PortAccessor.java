@@ -35,6 +35,17 @@ public class PortAccessor {
         this.updator = u;
     }
 
+    public void triggerDTR() {
+        try {
+            serialPort.setDTR(true);
+            Thread.sleep(50);
+            serialPort.setDTR(false);
+
+        } catch (SerialPortException | InterruptedException ses) {
+            System.out.println("Exception during DTR triggered reset," + ses.toString());
+        }
+    }
+
     public boolean start() {
 
         (new Thread(dp, "data")).start();
@@ -42,7 +53,7 @@ public class PortAccessor {
             serialPort = new SerialPort(portName);
             serialPort.openPort();//Open port
 //            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
-            serialPort.setParams(SerialPort.BAUDRATE_9600, 8, 1, 0);//Set params
+            serialPort.setParams(SerialPort.BAUDRATE_19200, 8, 1, 0);//Set params
             int mask = SerialPort.MASK_RXCHAR;//Prepare mask
             serialPort.setEventsMask(mask);//Set mask
             serialPort.addEventListener(new SerialPortReader());//Add SerialPortEventListener
@@ -54,10 +65,15 @@ public class PortAccessor {
     }
 
     public void stop() {
+        int tryCount = 0;
         try {
+            while (serialPort.isOpened() && tryCount < 10) {
+                serialPort.closePort();
+                tryCount++;
+                Thread.sleep(50);
+            }
             dp.stop();
-            serialPort.closePort();
-        } catch (Exception ex) {
+        } catch (SerialPortException | InterruptedException ex) {
             updator.updateString(ex.toString() + "\r\n");
         }
     }
