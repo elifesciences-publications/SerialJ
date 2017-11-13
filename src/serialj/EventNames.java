@@ -11,8 +11,8 @@ package serialj;
  */
 public class EventNames {
 
-    final static private String[] trans = new String[85];
-    final static private String[] permMessage = new String[255];
+    final static private String[] trans = new String[86];
+//    final static private String[] permMessage = new String[255];
 
     static public String[] init() {
 
@@ -20,9 +20,9 @@ public class EventNames {
 
         trans[1] = "Keypad";
 
-        trans[2] = "Lick2";
+        trans[2] = "DebugInfo";
 
-        trans[3] = "Come2";
+        trans[3] = "IO";
 
         trans[4] = "FalseAlarm";
 
@@ -179,37 +179,39 @@ public class EventNames {
         trans[83] = "OdorE";
 
         trans[84] = "AbortTrial";
-        
 
-        //List of Permanent Messages
-        permMessage[0] = "loop1step2";
-        permMessage[1] = "loop1step3";
-        permMessage[2] = "loop2step2";
-        permMessage[3] = "loop2step3";
-        permMessage[4] = "loop3step2";
-        permMessage[5] = "loop3step3";
-        permMessage[100] = "DMS LR Teach L--";
-        permMessage[101] = "DMS LR Teach L++";
-        permMessage[102] = "MSWOD LR Teach L--";
-        permMessage[103] = "DMS LR Teach L+-";
-        permMessage[104] = "DMS LR 5Delay L+-";
-        permMessage[105] = "DMS LR 8Delay L+-";
-        permMessage[106] = "DMS LR 12Delay L+-";
-        permMessage[107] = "DMS LR 1stOdor L+-";
-        permMessage[108] = "DMS LR 2ndOdor L+-";
-        permMessage[109] = "DMS LR bothOdor L+-";
-        permMessage[110] = "DMS LR baseline L+-";
-        permMessage[111] = "DMS LR response L+-";
+        trans[85] = "CorrectionCue";
+        
+//
+//        //List of Permanent Messages
+//        permMessage[0] = "loop1step2";
+//        permMessage[1] = "loop1step3";
+//        permMessage[2] = "loop2step2";
+//        permMessage[3] = "loop2step3";
+//        permMessage[4] = "loop3step2";
+//        permMessage[5] = "loop3step3";
+//        permMessage[100] = "DMS LR Teach L--";
+//        permMessage[101] = "DMS LR Teach L++";
+//        permMessage[102] = "MSWOD LR Teach L--";
+//        permMessage[103] = "DMS LR Teach L+-";
+//        permMessage[104] = "DMS LR 5Delay L+-";
+//        permMessage[105] = "DMS LR 8Delay L+-";
+//        permMessage[106] = "DMS LR 12Delay L+-";
+//        permMessage[107] = "DMS LR 1stOdor L+-";
+//        permMessage[108] = "DMS LR 2ndOdor L+-";
+//        permMessage[109] = "DMS LR bothOdor L+-";
+//        permMessage[110] = "DMS LR baseline L+-";
+//        permMessage[111] = "DMS LR response L+-";
 
         return trans;
 
     }
 
-    final public static String getMessage(int i) {
-        if (i >= 0 && i <= 255) {
-            return permMessage[i];
-        }
-        return "";
-    }
+//    final public static String getMessage(int i) {
+//        if (i >= 0 && i <= 255) {
+//            return permMessage[i];
+//        }
+//        return "";
+//    }
 
 }

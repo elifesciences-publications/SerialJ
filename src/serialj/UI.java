@@ -52,9 +52,11 @@ public class UI extends javax.swing.JFrame {
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2017\\";
     final private String[] expLists;
-    final XYChart chart = new XYChartBuilder().width(350).height(150).build();
-    final private String SerialName = "fid";
-    private LinkedList<Double> ydata = new LinkedList<>();
+    final XYChart chart = new XYChartBuilder().width(350).height(120).build();
+    final private String dataNameA = "data_A";
+    final private String dataNameB = "data_B";
+    private LinkedList<Double> ydata_A = new LinkedList<>();
+    private LinkedList<Double> ydata_B = new LinkedList<>();
 
     /**
      * Creates new form UI
@@ -86,7 +88,8 @@ public class UI extends javax.swing.JFrame {
 
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
             jButton6, jButton7, jButton8, jButton9, btnStop, jButtonReset, btnScript};
-        btnDisableGrp = new JComponent[]{btnRecord, txtFileName, btnClear, btnDate, btnType, btnSlash, btnCOM};
+        btnDisableGrp = new JComponent[]{btnRecord, btnClear,
+            btnDate, btnType, btnSlash, btnCOM, btnTemp};
         txtFileName.setEditable(true);
         ses = new ScheduledThreadPoolExecutor(1);
     }
@@ -119,6 +122,8 @@ public class UI extends javax.swing.JFrame {
         jScrollFilePath = new javax.swing.JScrollPane();
         txtFileName = new javax.swing.JTextArea();
         lblEmpty = new javax.swing.JLabel();
+        btnTemp = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         pnlBottom = new javax.swing.JPanel();
         LBPanel = new javax.swing.JPanel();
         scrollPerf = new javax.swing.JScrollPane();
@@ -160,7 +165,7 @@ public class UI extends javax.swing.JFrame {
         setTitle(ver);
         setMaximumSize(new java.awt.Dimension(512, 2147483647));
         setMinimumSize(new java.awt.Dimension(300, 240));
-        setPreferredSize(new java.awt.Dimension(375, 500));
+        setPreferredSize(new java.awt.Dimension(375, 470));
         getContentPane().setLayout(new java.awt.BorderLayout(6, 6));
 
         TopPanel.setMinimumSize(new java.awt.Dimension(350, 75));
@@ -179,7 +184,7 @@ public class UI extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         TopPanel.add(cboxCOMList, gridBagConstraints);
 
@@ -197,7 +202,7 @@ public class UI extends javax.swing.JFrame {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         TopPanel.add(btnRecord, gridBagConstraints);
 
@@ -213,10 +218,10 @@ public class UI extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         TopPanel.add(btnStop, gridBagConstraints);
 
@@ -231,10 +236,10 @@ public class UI extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         TopPanel.add(btnOpen, gridBagConstraints);
 
@@ -250,10 +255,10 @@ public class UI extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.03;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         TopPanel.add(btnClear, gridBagConstraints);
 
@@ -272,7 +277,7 @@ public class UI extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.gridwidth = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 2;
         gridBagConstraints.ipady = 2;
@@ -281,10 +286,32 @@ public class UI extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         TopPanel.add(jScrollFilePath, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.weightx = 1.0;
         TopPanel.add(lblEmpty, gridBagConstraints);
+
+        btnTemp.setText("TEMP");
+        btnTemp.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        btnTemp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTempActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        TopPanel.add(btnTemp, gridBagConstraints);
+
+        jLabel1.setText(" ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 30.0;
+        TopPanel.add(jLabel1, gridBagConstraints);
 
         getContentPane().add(TopPanel, java.awt.BorderLayout.NORTH);
 
@@ -663,7 +690,9 @@ public class UI extends javax.swing.JFrame {
 
         getContentPane().add(pnlBottom, java.awt.BorderLayout.CENTER);
 
-        pnlChart.setLayout(new java.awt.GridLayout());
+        pnlChart.setMinimumSize(new java.awt.Dimension(100, 100));
+        pnlChart.setPreferredSize(new java.awt.Dimension(350, 120));
+        pnlChart.setLayout(new java.awt.GridLayout(1, 0));
         getContentPane().add(pnlChart, java.awt.BorderLayout.PAGE_END);
 
         pack();
@@ -741,6 +770,9 @@ public class UI extends javax.swing.JFrame {
         txtCurrPref.setText("");
         txtLog.setText("");
         txtPerf.setText("");
+        ydata_A.clear();
+        ydata_B.clear();
+
 
     }//GEN-LAST:event_btnClearActionPerformed
 
@@ -766,6 +798,7 @@ public class UI extends javax.swing.JFrame {
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
         }
+        txtFileName.setEditable(true);
         for (JComponent jc : btnEnableGrp) {
             jc.setEnabled(false);
         }
@@ -786,6 +819,7 @@ public class UI extends javax.swing.JFrame {
             for (JComponent jc : btnDisableGrp) {
                 jc.setEnabled(false);
             }
+            txtFileName.setEditable(false);
             for (JComponent jc : btnEnableGrp) {
                 jc.setEnabled(true);
             }
@@ -831,10 +865,19 @@ public class UI extends javax.swing.JFrame {
             });
             int result = fc.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File f = fc.getSelectedFile();
-                u.updateString("Running Script " + f.getName());
-                se = new ScriptExecutor(f, p);
-                (new Thread(se)).start();
+                try {
+                    System.out.println("File apporved");
+                    File f = fc.getSelectedFile();
+                    System.out.println("File selected");
+                    u.updateString("Running Script " + f.getName());
+                    System.out.println("String updated");
+                    se = new ScriptExecutor(f, p);
+                    System.out.println("New executor");
+                    new Thread(se).start();
+                    System.out.println("Thread started");
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
             }
         } else {
             if (null != se) {
@@ -848,6 +891,11 @@ public class UI extends javax.swing.JFrame {
         txtFileName.append("[COM]");
         txtFileName.requestFocusInWindow();
     }//GEN-LAST:event_btnCOMActionPerformed
+
+    private void btnTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempActionPerformed
+        txtFileName.append("TEMP_[COM].ser");
+        btnRecordActionPerformed(evt);
+    }//GEN-LAST:event_btnTempActionPerformed
 
     /**
      * @param args the command line arguments
@@ -924,7 +972,7 @@ public class UI extends javax.swing.JFrame {
                             .append("M").append(String.format("%2d", histSta[0][1])).append(",")
                             .append("F").append(String.format("%2d", histSta[0][2])).append(",")
                             .append("C").append(String.format("%2d", histSta[0][3])).append(",")
-                            .append("C").append(String.format("%2d", histSta[0][4])).append("\r\n");
+                            .append("A").append(String.format("%2d", histSta[0][4])).append("\r\n");
                     if (histSta[1][0] + histSta[1][1] + histSta[1][2] + histSta[1][3] > 0) {
                         perf.append("-->R,H").append(String.format("%2d", histSta[1][0])).append(",")
                                 .append("M").append(String.format("%2d", histSta[1][1])).append(",")
@@ -1095,22 +1143,29 @@ public class UI extends javax.swing.JFrame {
                     }
                     break;
                 case 27:
-                    chartVal = (event[2] & 0x7f) << 6;
+                    chartVal = (event[2] & 0x3f) << 6;
                     chartHighSet = true;
                     break;
                 case 28:
-                    chartVal += (event[2] & 0x7f);
+                    chartVal += (event[2] & 0x3f);
                     chartHighSet = false;
-                    updateChart(chartVal);
+                    updateChart(chartVal, (event[2] & 0x40) >> 6);
                     break;
 
             }
         }
 
-        private void updateChart(int val) {
-            ydata.add((double) val);
-            while (ydata.size() > 20) {
-                ydata.remove(0);
+        private void updateChart(int val, int grp) {
+            if (grp == 0) {
+                ydata_A.add((double) val);
+                while (ydata_A.size() > 20) {
+                    ydata_A.remove(0);
+                }
+            } else {
+                ydata_B.add((double) val);
+                while (ydata_B.size() > 20) {
+                    ydata_B.remove(0);
+                }
             }
 //            if (xdata.size() < ydata.size()) {
 //                for (double timeTag = xdata.size(); timeTag < ydata.size(); timeTag++) {
@@ -1123,12 +1178,14 @@ public class UI extends javax.swing.JFrame {
 //            ((XChartPanel) pnlChart).
             SwingUtilities.invokeLater(() -> {
                 if (chart.getSeriesMap().isEmpty()) {
-                    chart.addSeries(SerialName, null, ydata, null);
+                    chart.addSeries(dataNameA, null, ydata_A, null);
+                    chart.addSeries(dataNameB, null, ydata_B, null);
                 }
-                chart.updateXYSeries(SerialName, null, ydata, null);
+                chart.updateXYSeries(dataNameA, null, ydata_A, null);
+                chart.updateXYSeries(dataNameB, null, ydata_B, null);
                 pnlChart.repaint();
                 pnlChart.revalidate();
-                
+
             });
         }
 
@@ -1171,17 +1228,16 @@ public class UI extends javax.swing.JFrame {
             }
         }
 
-        private void updatePermString(int evt) {
-            final String s = EventNames.getMessage(evt);
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    jTxtPermText.setText(s);
-                });
-            } catch (InterruptedException | InvocationTargetException ex) {
-                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
+//        private void updatePermString(int evt) {
+//            final String s = EventNames.getMessage(evt);
+//            try {
+//                SwingUtilities.invokeAndWait(() -> {
+//                    jTxtPermText.setText(s);
+//                });
+//            } catch (InterruptedException | InvocationTargetException ex) {
+//                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
         private String evt2Str(int[] evt) {
             String s;
             switch (evt[1]) {
@@ -1190,6 +1246,8 @@ public class UI extends javax.swing.JFrame {
                     break;
                 case 25:
                 case 26:
+                case 27:
+                case 28:
                     s = null;
                     break;
                 default:
@@ -1248,6 +1306,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JToggleButton btnScript;
     private javax.swing.JButton btnSlash;
     private javax.swing.JButton btnStop;
+    private javax.swing.JButton btnTemp;
     private javax.swing.JButton btnType;
     private javax.swing.JComboBox cboxCOMList;
     private javax.swing.JButton jButton0;
@@ -1262,6 +1321,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JButton jButtonClearLickFreq;
     private javax.swing.JButton jButtonReset;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollFilePath;
     private javax.swing.JScrollPane jScrollPane1;
