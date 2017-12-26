@@ -38,9 +38,9 @@ public class EventNames {
 
         trans[10] = "Odor_B";
 
-        trans[11] = "Water_bitter";
+        trans[11] = "Distractor Sample";
 
-        trans[12] = "Valve5";
+        trans[12] = "Distractor Test";
 
         trans[13] = "Valve6";
 

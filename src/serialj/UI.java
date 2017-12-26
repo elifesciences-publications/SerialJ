@@ -7,6 +7,8 @@ package serialj;
 
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,11 +19,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -42,21 +48,22 @@ import org.knowm.xchart.XYChartBuilder;
  *
  * @author Xiaoxing
  */
-public class UI extends javax.swing.JFrame {
+public class UI extends javax.swing.JFrame implements WindowListener {
 
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial2 0.52 @" + getPID();
+    final private String ver = "ZX Serial2 0.62 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2017\\";
-    final private String[] expLists;
-    final XYChart chart = new XYChartBuilder().width(350).height(120).build();
+
+    private XYChart chart = new XYChartBuilder().width(350).height(120).build();
     final private String dataNameA = "data_A";
     final private String dataNameB = "data_B";
     private LinkedList<Double> ydata_A = new LinkedList<>();
     private LinkedList<Double> ydata_B = new LinkedList<>();
+    final private LinkedBlockingQueue<String> logTxtQue;
 
     /**
      * Creates new form UI
@@ -79,8 +86,11 @@ public class UI extends javax.swing.JFrame {
         if (sp != null) {
             savePath = sp;
         }
+
+        logTxtQue = new LinkedBlockingQueue<>(50);
+        ses = new ScheduledThreadPoolExecutor(1);
         u = new LogUpdator();
-        expLists = flib.getExperimentConditions();
+        refreshTask = ses.scheduleWithFixedDelay(new Refresh(), 200, 200, TimeUnit.MILLISECONDS);
         chart.getStyler().setPlotMargin(2).setAxisTicksVisible(false)
                 .setChartBackgroundColor(Color.white).setLegendVisible(false);
 //        chart.addSeries(SerialName, null,ydata,null);
@@ -91,7 +101,7 @@ public class UI extends javax.swing.JFrame {
         btnDisableGrp = new JComponent[]{btnRecord, btnClear,
             btnDate, btnType, btnSlash, btnCOM, btnTemp};
         txtFileName.setEditable(true);
-        ses = new ScheduledThreadPoolExecutor(1);
+
     }
 
     private void initLogger() throws IOException {
@@ -411,8 +421,8 @@ public class UI extends javax.swing.JFrame {
 
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane4.setMinimumSize(new java.awt.Dimension(100, 45));
-        jScrollPane4.setPreferredSize(new java.awt.Dimension(150, 45));
+        jScrollPane4.setMinimumSize(new java.awt.Dimension(100, 64));
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(150, 64));
 
         txtCurrPref.setEditable(false);
         txtCurrPref.setColumns(20);
@@ -755,7 +765,8 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSlashActionPerformed
 
     private void btnTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTypeActionPerformed
-        (new ExperimentsForm(expLists, txtFileName)).setVisible(true);
+        String[] expLists = new FileLib().getExperimentConditions();
+        new ExperimentsForm(expLists, txtFileName).setVisible(true);
         txtFileName.requestFocusInWindow();
     }//GEN-LAST:event_btnTypeActionPerformed
 
@@ -772,8 +783,14 @@ public class UI extends javax.swing.JFrame {
         txtPerf.setText("");
         ydata_A.clear();
         ydata_B.clear();
-
-
+        if (!chart.getSeriesMap().isEmpty()) {
+            Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
+            keyset.forEach((key) -> {
+                chart.removeSeries(key);
+            });
+        }
+        pnlChart.repaint();
+        pnlChart.revalidate();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
@@ -813,6 +830,9 @@ public class UI extends javax.swing.JFrame {
             return;
         }
         txtFileName.setText(txtFileName.getText().replaceAll("\\[COM\\]", portNames[cboxCOMList.getSelectedIndex()]));
+        if (!txtFileName.getText().endsWith(".ser")) {
+            txtFileName.setText(txtFileName.getText() + ".ser");
+        }
         p = new PortAccessor(portNames[cboxCOMList.getSelectedIndex()]);
         p.setUpdater(u);
         if (p.setFileToPath(txtFileName.getText()) && p.start()) {
@@ -865,19 +885,12 @@ public class UI extends javax.swing.JFrame {
             });
             int result = fc.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                try {
-                    System.out.println("File apporved");
-                    File f = fc.getSelectedFile();
-                    System.out.println("File selected");
-                    u.updateString("Running Script " + f.getName());
-                    System.out.println("String updated");
-                    se = new ScriptExecutor(f, p);
-                    System.out.println("New executor");
-                    new Thread(se).start();
-                    System.out.println("Thread started");
-                } catch (Exception e) {
-                    System.out.println(e.toString());
-                }
+                File f = fc.getSelectedFile();
+                System.out.println("File selected");
+                u.updateString("Running Script " + f.getName());
+                System.out.println("String updated");
+                se = new ScriptExecutor(f, p);
+                new Thread(se).start();
             }
         } else {
             if (null != se) {
@@ -896,6 +909,35 @@ public class UI extends javax.swing.JFrame {
         txtFileName.append("TEMP_[COM].ser");
         btnRecordActionPerformed(evt);
     }//GEN-LAST:event_btnTempActionPerformed
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        refreshTask.cancel(true);
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
 
     /**
      * @param args the command line arguments
@@ -929,7 +971,8 @@ public class UI extends javax.swing.JFrame {
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean updateStatusFile;
-        final private StringBuilder logTxt;
+//        final private StringBuilder logTxt;
+
         private int[][] currSta;
         private int lFreq = 0;
         private int lFreqMax = 0;
@@ -944,42 +987,43 @@ public class UI extends javax.swing.JFrame {
         final private char[][] lcdText = new char[2][16];
         private int chartVal;
         private boolean chartHighSet;
+        final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
-            logTxt = new StringBuilder();
-            logTxt.ensureCapacity(500);
+
             perfHist = new ArrayList<>();
             hName = EventNames.init();
-            currSta = new int[2][5];//Hit,Miss,False,Reject,Abort
+            currSta = new int[3][5];//Hit,Miss,False,Reject,Abort
             updateStatusFile = (new File(statusFileParent)).exists();
             freqText = new StringBuilder();
         }
+//        private int sumCorrect(int[] in){
+//            return 
+//        }
 
         public void updatePerf() {
 //            Arrays.stream(currSta[0]).sum();
-            if (Arrays.stream(currSta[0]).sum() + Arrays.stream(currSta[1]).sum() > 0) {
+            if (Arrays.stream(currSta[0]).sum()
+                    + Arrays.stream(currSta[1]).sum()
+                    + Arrays.stream(currSta[2]).sum() > 0) {
                 perfHist.add(currSta);
                 final StringBuilder perf = new StringBuilder();
                 for (int i = 0; i < perfHist.size(); i++) {
-                    perf.append("S").append(String.format("%2d", i + 1)).append(",");
+                    perf.append("S").append(String.format("%2d", i + 1)).append("\r\n");
                     int[][] histSta = perfHist.get(i);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
 
-                    perf.append("P").append(String.format("%3d", performance)).append(",")
-                            .append("H").append(String.format("%2d", histSta[0][0])).append(",")
-                            .append("M").append(String.format("%2d", histSta[0][1])).append(",")
-                            .append("F").append(String.format("%2d", histSta[0][2])).append(",")
-                            .append("C").append(String.format("%2d", histSta[0][3])).append(",")
-                            .append("A").append(String.format("%2d", histSta[0][4])).append("\r\n");
-                    if (histSta[1][0] + histSta[1][1] + histSta[1][2] + histSta[1][3] > 0) {
-                        perf.append("-->R,H").append(String.format("%2d", histSta[1][0])).append(",")
-                                .append("M").append(String.format("%2d", histSta[1][1])).append(",")
-                                .append("F").append(String.format("%2d", histSta[1][2])).append(",")
-                                .append("C").append(String.format("%2d", histSta[1][3])).append(",")
-                                .append("A").append(String.format("%2d", histSta[1][4])).append("\r\n\r\n");
+                    perf.append(String.format("P %3d", performance)).append(",")
+                            .append(genPerfStr(histSta[0])).append("\r\n");
+                    if (Arrays.stream(histSta[1]).sum() > 0) {
+                        perf.append("2AFC,").append(genPerfStr(histSta[1])).append("\r\n");
                     }
+                    if (Arrays.stream(histSta[2]).sum() > 0) {
+                        perf.append("DUAL,").append(genPerfStr(histSta[2])).append("\r\n");
+                    }
+                    perf.append("\r\n");
                 }
                 final String s = perf.toString();
                 txtPerf.setText(s);
@@ -995,23 +1039,34 @@ public class UI extends javax.swing.JFrame {
                         Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                currSta = new int[2][5];
+                currSta = new int[3][5];
             }
+        }
+
+        public boolean refreshTxtUpdateState() {
+            boolean tempu = this.txtUpdated.get();
+            this.txtUpdated.set(false);
+            return tempu;
+        }
+
+        private String genPerfStr(int[] in) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("H").append(String.format("%2d", in[0])).append("  ")
+                    .append("M").append(String.format("%2d", in[1])).append("  ")
+                    .append("F").append(String.format("%2d", in[2])).append("  ")
+                    .append("C").append(String.format("%2d", in[3])).append("  ")
+                    .append("A").append(String.format("%2d", in[4]));
+            return sb.toString();
         }
 
         private void updateCurrSta() {
             final StringBuilder currStaStr = new StringBuilder();
-            currStaStr.append("H").append(String.format("%2d", currSta[0][0])).append("  ")
-                    .append("M").append(String.format("%2d", currSta[0][1])).append("  ")
-                    .append("F").append(String.format("%2d", currSta[0][2])).append("  ")
-                    .append("C").append(String.format("%2d", currSta[0][3])).append("  ")
-                    .append("A").append(String.format("%2d", currSta[0][4]));
-            if (currSta[1][0] + currSta[1][1] + currSta[1][2] + currSta[1][3] + currSta[1][4] > 0) {
-                currStaStr.append("\r\nH").append(String.format("%2d", currSta[1][0])).append("  ")
-                        .append("M").append(String.format("%2d", currSta[1][1])).append("  ")
-                        .append("F").append(String.format("%2d", currSta[1][2])).append("  ")
-                        .append("C").append(String.format("%2d", currSta[1][3])).append("  ")
-                        .append("A").append(String.format("%2d", currSta[1][4]));
+            currStaStr.append(genPerfStr(currSta[0]));
+            if (Arrays.stream(currSta[1]).sum() > 0) {
+                currStaStr.append("\r\n").append(genPerfStr(currSta[1]));
+            }
+            if (Arrays.stream(currSta[2]).sum() > 0) {
+                currStaStr.append("\r\n").append(genPerfStr(currSta[2]));
             }
             final String s = currStaStr.toString();
             try {
@@ -1075,25 +1130,25 @@ public class UI extends javax.swing.JFrame {
 
                     break;
                 case 4:
-                    currSta[event[2] == 3 ? 1 : 0][2]++;//false
+                    currSta[event[2] - 1][2]++;//false
                     updateCurrSta();
                     break;
                 case 5:
-                    currSta[event[2] == 3 ? 1 : 0][3]++;//reject
+                    currSta[event[2] - 1][3]++;//reject
                     updateCurrSta();
                     break;
                 case 6:
                     if (event[2] < 4 && event[2] > 0) {
-                        currSta[event[2] == 3 ? 1 : 0][1]++;//Miss
+                        currSta[event[2] - 1][1]++;//Miss
                         updateCurrSta();
                     }
                     break;
                 case 7:
-                    currSta[event[2] == 3 ? 1 : 0][0]++; //hit
+                    currSta[event[2] - 1][0]++; //hit
                     updateCurrSta();
                     break;
                 case 84:
-                    currSta[event[2] == 3 ? 1 : 0][4]++; //abort
+                    currSta[event[2] - 1][4]++; //abort
                     updateCurrSta();
                     break;
                 case 20:
@@ -1167,17 +1222,13 @@ public class UI extends javax.swing.JFrame {
                     ydata_B.remove(0);
                 }
             }
-//            if (xdata.size() < ydata.size()) {
-//                for (double timeTag = xdata.size(); timeTag < ydata.size(); timeTag++) {
-//                    xdata.add(timeTag * 0.25);
-//                }
-//            } else if (xdata.size() > ydata.size()) {
-//                for (double timeTag = ydata.size(); timeTag < xdata.size(); timeTag++) {
-//                    xdata.removeLast();
-//            }
-//            ((XChartPanel) pnlChart).
+
             SwingUtilities.invokeLater(() -> {
-                if (chart.getSeriesMap().isEmpty()) {
+                if (chart.getSeriesMap().size() != 2) {
+                    Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
+                    keyset.forEach((key) -> {
+                        chart.removeSeries(key);
+                    });
                     chart.addSeries(dataNameA, null, ydata_A, null);
                     chart.addSeries(dataNameB, null, ydata_B, null);
                 }
@@ -1208,36 +1259,15 @@ public class UI extends javax.swing.JFrame {
             }
         }
 
-        synchronized public void updateString(String str) {
-            logTxt.append(str).append("\r\n");
-            while (logTxt.length() > 500) {
-                logTxt.delete(0, logTxt.indexOf("\r\n") + 2);
+        public void updateString(String str) {
+
+            while (!logTxtQue.offer(str)) {
+                logTxtQue.poll();
             }
-            final String s = logTxt.toString();
-            if (SwingUtilities.isEventDispatchThread()) {
-                txtLog.setText(s);
-            } else {
-                try {
-                    SwingUtilities.invokeAndWait(
-                            () -> {
-                                txtLog.setText(s);
-                            });
-                } catch (InterruptedException | InvocationTargetException ex) {
-                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            this.txtUpdated.set(true);
+
         }
 
-//        private void updatePermString(int evt) {
-//            final String s = EventNames.getMessage(evt);
-//            try {
-//                SwingUtilities.invokeAndWait(() -> {
-//                    jTxtPermText.setText(s);
-//                });
-//            } catch (InterruptedException | InvocationTargetException ex) {
-//                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
         private String evt2Str(int[] evt) {
             String s;
             switch (evt[1]) {
@@ -1291,6 +1321,21 @@ public class UI extends javax.swing.JFrame {
                 }
             }
             alarm = true;
+        }
+    }
+
+    class Refresh implements Runnable {
+
+        @Override
+        public void run() {
+            if (u.refreshTxtUpdateState()) {
+                StringBuilder sb = new StringBuilder();
+                logTxtQue.iterator().forEachRemaining((s) -> {
+                    sb.append(s);
+                    sb.append("\r\n");
+                });
+                SwingUtilities.invokeLater(() -> txtLog.setText(sb.toString()));
+            }
         }
     }
 
@@ -1349,6 +1394,7 @@ public class UI extends javax.swing.JFrame {
     private boolean alarm = false;
     private ScheduledExecutorService ses;
     private ScheduledFuture redBgTimerTask;
+    private ScheduledFuture refreshTask;
     private ScriptExecutor se;
 
 }
