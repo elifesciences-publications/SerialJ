@@ -49,15 +49,15 @@ import org.knowm.xchart.XYChartBuilder;
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
-
+    
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial2 0.62 @" + getPID();
+    final private String ver = "ZX Serial2 0.63 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2017\\";
-
+    
     private XYChart chart = new XYChartBuilder().width(350).height(120).build();
     final private String dataNameA = "data_A";
     final private String dataNameB = "data_B";
@@ -86,7 +86,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         if (sp != null) {
             savePath = sp;
         }
-
+        
         logTxtQue = new LinkedBlockingQueue<>(50);
         ses = new ScheduledThreadPoolExecutor(1);
         u = new LogUpdator();
@@ -95,15 +95,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 .setChartBackgroundColor(Color.white).setLegendVisible(false);
 //        chart.addSeries(SerialName, null,ydata,null);
         initComponents();
-
+        
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
             jButton6, jButton7, jButton8, jButton9, btnStop, jButtonReset, btnScript};
         btnDisableGrp = new JComponent[]{btnRecord, btnClear,
             btnDate, btnType, btnSlash, btnCOM, btnTemp};
         txtFileName.setEditable(true);
-
+        
     }
-
+    
     private void initLogger() throws IOException {
         Logger rootLogger = Logger.getLogger("");
         rootLogger.setLevel(Level.FINE);
@@ -124,24 +124,27 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         java.awt.GridBagConstraints gridBagConstraints;
 
         TopPanel = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         cboxCOMList = new javax.swing.JComboBox();
         btnRecord = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
+        btnTemp = new javax.swing.JButton();
+        lblEmpty = new javax.swing.JLabel();
         btnOpen = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
+        chkPause = new javax.swing.JCheckBox();
         jScrollFilePath = new javax.swing.JScrollPane();
         txtFileName = new javax.swing.JTextArea();
-        lblEmpty = new javax.swing.JLabel();
-        btnTemp = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         pnlBottom = new javax.swing.JPanel();
         LBPanel = new javax.swing.JPanel();
-        scrollPerf = new javax.swing.JScrollPane();
-        txtPerf = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         btnDate = new javax.swing.JButton();
         btnType = new javax.swing.JButton();
         btnSlash = new javax.swing.JButton();
         btnCOM = new javax.swing.JButton();
+        scrollPerf = new javax.swing.JScrollPane();
+        txtPerf = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtCurrPref = new javax.swing.JTextArea();
         jTxtPermText = new javax.swing.JTextField();
@@ -162,10 +165,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         btnScript = new javax.swing.JToggleButton();
         jButtonReset = new javax.swing.JButton();
         pnlLogLCD = new javax.swing.JPanel();
-        jScrollTxtLog = new javax.swing.JScrollPane();
-        txtLog = new javax.swing.JTextArea();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLCD = new javax.swing.JTextArea();
+        jScrollTxtLog = new javax.swing.JScrollPane();
+        txtLog = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         jTxtLickFreq = new javax.swing.JTextField();
         jButtonClearLickFreq = new javax.swing.JButton();
@@ -180,7 +183,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         TopPanel.setMinimumSize(new java.awt.Dimension(350, 75));
         TopPanel.setPreferredSize(new java.awt.Dimension(350, 75));
-        TopPanel.setLayout(new java.awt.GridBagLayout());
+        TopPanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel3.setLayout(new java.awt.GridBagLayout());
 
         cboxCOMList.setModel(new javax.swing.DefaultComboBoxModel(portNames));
         cboxCOMList.setMinimumSize(new java.awt.Dimension(70, 24));
@@ -195,14 +200,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(cboxCOMList, gridBagConstraints);
+        jPanel3.add(cboxCOMList, gridBagConstraints);
 
         btnRecord.setText("|>");
         btnRecord.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnRecord.setMaximumSize(new java.awt.Dimension(32767, 32767));
-        btnRecord.setMinimumSize(new java.awt.Dimension(55, 24));
-        btnRecord.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnRecord.setMaximumSize(new java.awt.Dimension(1000, 24));
+        btnRecord.setMinimumSize(new java.awt.Dimension(50, 24));
+        btnRecord.setPreferredSize(new java.awt.Dimension(50, 24));
         btnRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRecordActionPerformed(evt);
@@ -213,15 +219,16 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(btnRecord, gridBagConstraints);
+        jPanel3.add(btnRecord, gridBagConstraints);
 
         btnStop.setText("[]");
         btnStop.setEnabled(false);
         btnStop.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnStop.setMaximumSize(new java.awt.Dimension(32767, 32767));
-        btnStop.setMinimumSize(new java.awt.Dimension(55, 24));
-        btnStop.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnStop.setMaximumSize(new java.awt.Dimension(1000, 24));
+        btnStop.setMinimumSize(new java.awt.Dimension(50, 24));
+        btnStop.setPreferredSize(new java.awt.Dimension(50, 24));
         btnStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStopActionPerformed(evt);
@@ -232,14 +239,42 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(btnStop, gridBagConstraints);
+        jPanel3.add(btnStop, gridBagConstraints);
+
+        btnTemp.setText("TEMP");
+        btnTemp.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        btnTemp.setMaximumSize(new java.awt.Dimension(1000, 24));
+        btnTemp.setMinimumSize(new java.awt.Dimension(50, 24));
+        btnTemp.setPreferredSize(new java.awt.Dimension(50, 24));
+        btnTemp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTempActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel3.add(btnTemp, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel3.add(lblEmpty, gridBagConstraints);
 
         btnOpen.setText("Open");
         btnOpen.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnOpen.setMaximumSize(new java.awt.Dimension(32767, 32767));
-        btnOpen.setMinimumSize(new java.awt.Dimension(55, 24));
-        btnOpen.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnOpen.setMaximumSize(new java.awt.Dimension(1000, 24));
+        btnOpen.setMinimumSize(new java.awt.Dimension(50, 24));
+        btnOpen.setPreferredSize(new java.awt.Dimension(50, 24));
         btnOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOpenActionPerformed(evt);
@@ -250,15 +285,16 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(btnOpen, gridBagConstraints);
+        jPanel3.add(btnOpen, gridBagConstraints);
 
         btnClear.setText("Clear");
         btnClear.setEnabled(false);
         btnClear.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnClear.setMaximumSize(new java.awt.Dimension(32767, 32767));
-        btnClear.setMinimumSize(new java.awt.Dimension(55, 24));
-        btnClear.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnClear.setMaximumSize(new java.awt.Dimension(1000, 24));
+        btnClear.setMinimumSize(new java.awt.Dimension(50, 24));
+        btnClear.setPreferredSize(new java.awt.Dimension(50, 24));
         btnClear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearActionPerformed(evt);
@@ -269,8 +305,28 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(btnClear, gridBagConstraints);
+        jPanel3.add(btnClear, gridBagConstraints);
+
+        chkPause.setText("pause");
+        chkPause.setMinimumSize(new java.awt.Dimension(60, 23));
+        chkPause.setPreferredSize(new java.awt.Dimension(60, 23));
+        chkPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkPauseActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel3.add(chkPause, gridBagConstraints);
+
+        TopPanel.add(jPanel3, java.awt.BorderLayout.NORTH);
 
         jScrollFilePath.setMinimumSize(new java.awt.Dimension(200, 48));
         jScrollFilePath.setPreferredSize(new java.awt.Dimension(370, 60));
@@ -284,44 +340,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtFileName.setPreferredSize(null);
         jScrollFilePath.setViewportView(txtFileName);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 2;
-        gridBagConstraints.ipady = 2;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(jScrollFilePath, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.weightx = 1.0;
-        TopPanel.add(lblEmpty, gridBagConstraints);
-
-        btnTemp.setText("TEMP");
-        btnTemp.setMargin(new java.awt.Insets(2, 4, 2, 4));
-        btnTemp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTempActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        TopPanel.add(btnTemp, gridBagConstraints);
-
-        jLabel1.setText(" ");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.weightx = 30.0;
-        TopPanel.add(jLabel1, gridBagConstraints);
+        TopPanel.add(jScrollFilePath, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(TopPanel, java.awt.BorderLayout.NORTH);
 
@@ -330,25 +349,11 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         LBPanel.setMinimumSize(new java.awt.Dimension(100, 100));
         LBPanel.setPreferredSize(new java.awt.Dimension(190, 240));
-        LBPanel.setLayout(new java.awt.GridBagLayout());
+        LBPanel.setLayout(new java.awt.BorderLayout(2, 2));
 
-        scrollPerf.setMinimumSize(new java.awt.Dimension(100, 100));
-        scrollPerf.setPreferredSize(new java.awt.Dimension(100, 145));
+        jPanel2.setLayout(new java.awt.BorderLayout(2, 2));
 
-        txtPerf.setEditable(false);
-        txtPerf.setColumns(12);
-        txtPerf.setRows(5);
-        scrollPerf.setViewportView(txtPerf);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        LBPanel.add(scrollPerf, gridBagConstraints);
+        jPanel1.setLayout(new java.awt.GridLayout());
 
         btnDate.setText("Date");
         btnDate.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -360,13 +365,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 btnDateActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        LBPanel.add(btnDate, gridBagConstraints);
+        jPanel1.add(btnDate);
 
         btnType.setText("Type");
         btnType.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -378,13 +377,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 btnTypeActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        LBPanel.add(btnType, gridBagConstraints);
+        jPanel1.add(btnType);
 
         btnSlash.setText(File.separator);
         btnSlash.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -396,13 +389,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 btnSlashActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        LBPanel.add(btnSlash, gridBagConstraints);
+        jPanel1.add(btnSlash);
 
         btnCOM.setText("COM");
         btnCOM.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -411,13 +398,19 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 btnCOMActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        LBPanel.add(btnCOM, gridBagConstraints);
+        jPanel1.add(btnCOM);
+
+        jPanel2.add(jPanel1, java.awt.BorderLayout.NORTH);
+
+        scrollPerf.setMinimumSize(new java.awt.Dimension(100, 100));
+        scrollPerf.setPreferredSize(new java.awt.Dimension(100, 145));
+
+        txtPerf.setEditable(false);
+        txtPerf.setColumns(12);
+        txtPerf.setRows(5);
+        scrollPerf.setViewportView(txtPerf);
+
+        jPanel2.add(scrollPerf, java.awt.BorderLayout.CENTER);
 
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -431,14 +424,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtCurrPref.setPreferredSize(null);
         jScrollPane4.setViewportView(txtCurrPref);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 1, 2, 1);
-        LBPanel.add(jScrollPane4, gridBagConstraints);
+        jPanel2.add(jScrollPane4, java.awt.BorderLayout.SOUTH);
+
+        LBPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
 
         jTxtPermText.setEditable(false);
         jTxtPermText.setBackground(new java.awt.Color(255, 255, 255));
@@ -449,20 +437,13 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 jTxtPermTextActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 1, 0, 1);
-        LBPanel.add(jTxtPermText, gridBagConstraints);
+        LBPanel.add(jTxtPermText, java.awt.BorderLayout.SOUTH);
 
         pnlBottom.add(LBPanel);
 
         RBPanel.setLayout(new java.awt.BorderLayout(0, 3));
 
-        pnlNumButton.setLayout(new java.awt.GridBagLayout());
+        pnlNumButton.setLayout(new java.awt.BorderLayout());
 
         pnlNum.setLayout(new java.awt.GridLayout(2, 5, 3, 3));
 
@@ -596,13 +577,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         });
         pnlNum.add(jButton0);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 2.0;
-        gridBagConstraints.weighty = 1.0;
-        pnlNumButton.add(pnlNum, gridBagConstraints);
+        pnlNumButton.add(pnlNum, java.awt.BorderLayout.CENTER);
 
         pnlBtn.setLayout(new java.awt.GridLayout(2, 1, 3, 3));
 
@@ -611,7 +586,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         btnScript.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnScript.setMaximumSize(new java.awt.Dimension(32767, 32767));
         btnScript.setMinimumSize(new java.awt.Dimension(40, 24));
-        btnScript.setPreferredSize(new java.awt.Dimension(55, 24));
+        btnScript.setPreferredSize(new java.awt.Dimension(40, 24));
         btnScript.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnScriptActionPerformed(evt);
@@ -624,7 +599,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         jButtonReset.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jButtonReset.setMaximumSize(new java.awt.Dimension(32767, 32767));
         jButtonReset.setMinimumSize(new java.awt.Dimension(40, 24));
-        jButtonReset.setPreferredSize(new java.awt.Dimension(55, 24));
+        jButtonReset.setPreferredSize(new java.awt.Dimension(40, 24));
         jButtonReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonResetActionPerformed(evt);
@@ -632,29 +607,11 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         });
         pnlBtn.add(jButtonReset);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
-        pnlNumButton.add(pnlBtn, gridBagConstraints);
+        pnlNumButton.add(pnlBtn, java.awt.BorderLayout.EAST);
 
         RBPanel.add(pnlNumButton, java.awt.BorderLayout.NORTH);
 
         pnlLogLCD.setLayout(new java.awt.BorderLayout(0, 3));
-
-        jScrollTxtLog.setMinimumSize(new java.awt.Dimension(100, 200));
-        jScrollTxtLog.setPreferredSize(new java.awt.Dimension(100, 200));
-
-        txtLog.setEditable(false);
-        txtLog.setColumns(12);
-        txtLog.setRows(5);
-        txtLog.setPreferredSize(null);
-        jScrollTxtLog.setViewportView(txtLog);
-
-        pnlLogLCD.add(jScrollTxtLog, java.awt.BorderLayout.CENTER);
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -665,6 +622,19 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         jScrollPane1.setViewportView(txtLCD);
 
         pnlLogLCD.add(jScrollPane1, java.awt.BorderLayout.SOUTH);
+
+        jScrollTxtLog.setAlignmentX(0.0F);
+        jScrollTxtLog.setAlignmentY(0.0F);
+        jScrollTxtLog.setMinimumSize(new java.awt.Dimension(100, 200));
+        jScrollTxtLog.setPreferredSize(new java.awt.Dimension(100, 200));
+
+        txtLog.setEditable(false);
+        txtLog.setColumns(12);
+        txtLog.setRows(5);
+        txtLog.setPreferredSize(null);
+        jScrollTxtLog.setViewportView(txtLog);
+
+        pnlLogLCD.add(jScrollTxtLog, java.awt.BorderLayout.CENTER);
 
         RBPanel.add(pnlLogLCD, java.awt.BorderLayout.CENTER);
 
@@ -825,8 +795,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordActionPerformed
-
-        if (cboxCOMList.getSelectedIndex() < 0) {
+        
+        if (cboxCOMList.getSelectedIndex() < 0
+                || txtFileName.getText().endsWith("\\")) {
             return;
         }
         txtFileName.setText(txtFileName.getText().replaceAll("\\[COM\\]", portNames[cboxCOMList.getSelectedIndex()]));
@@ -846,7 +817,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
-
+            
             redBgTimerTask = ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
         }
     }//GEN-LAST:event_btnRecordActionPerformed
@@ -868,12 +839,12 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             JFileChooser fc = new JFileChooser();
             fc.setCurrentDirectory((new File(".")));
             fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
+                
                 @Override
                 public String getDescription() {
                     return "Script Files (.txt)";
                 }
-
+                
                 @Override
                 public boolean accept(File f) {
                     if (f.isDirectory() || f.getAbsolutePath().endsWith(".txt")) {
@@ -881,7 +852,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     }
                     return false;
                 }
-
+                
             });
             int result = fc.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -906,35 +877,41 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_btnCOMActionPerformed
 
     private void btnTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempActionPerformed
-        txtFileName.append("TEMP_[COM].ser");
+        if (!txtFileName.getText().endsWith("TEMP_[COM].ser")) {
+            txtFileName.append("TEMP_[COM].ser");
+        }
         btnRecordActionPerformed(evt);
     }//GEN-LAST:event_btnTempActionPerformed
 
+    private void chkPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPauseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkPauseActionPerformed
+    
     @Override
     public void windowActivated(WindowEvent e) {
     }
-
+    
     @Override
     public void windowClosed(WindowEvent e) {
     }
-
+    
     @Override
     public void windowClosing(WindowEvent e) {
         refreshTask.cancel(true);
     }
-
+    
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-
+    
     @Override
     public void windowDeiconified(WindowEvent e) {
     }
-
+    
     @Override
     public void windowOpened(WindowEvent e) {
     }
-
+    
     @Override
     public void windowIconified(WindowEvent e) {
     }
@@ -965,9 +942,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             new UI().setVisible(true);
         });
     }
-
+    
     public class LogUpdator {
-
+        
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean updateStatusFile;
@@ -991,7 +968,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
-
+            
             perfHist = new ArrayList<>();
             hName = EventNames.init();
             currSta = new int[3][5];//Hit,Miss,False,Reject,Abort
@@ -1014,7 +991,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     int[][] histSta = perfHist.get(i);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
-
+                    
                     perf.append(String.format("P %3d", performance)).append(",")
                             .append(genPerfStr(histSta[0])).append("\r\n");
                     if (Arrays.stream(histSta[1]).sum() > 0) {
@@ -1031,7 +1008,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 scrollPerf.validate();
                 vbar.setValue(vbar.getMaximum());
                 scrollPerf.validate();
-
+                
                 if (updateStatusFile) {
                     try (BufferedWriter bw = new BufferedWriter(new FileWriter(statusFilePath))) {
                         bw.write(s);
@@ -1042,13 +1019,13 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 currSta = new int[3][5];
             }
         }
-
+        
         public boolean refreshTxtUpdateState() {
             boolean tempu = this.txtUpdated.get();
             this.txtUpdated.set(false);
             return tempu;
         }
-
+        
         private String genPerfStr(int[] in) {
             StringBuilder sb = new StringBuilder();
             sb.append("H").append(String.format("%2d", in[0])).append("  ")
@@ -1058,7 +1035,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     .append("A").append(String.format("%2d", in[4]));
             return sb.toString();
         }
-
+        
         private void updateCurrSta() {
             final StringBuilder currStaStr = new StringBuilder();
             currStaStr.append(genPerfStr(currSta[0]));
@@ -1077,9 +1054,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         synchronized public void updateEvent(int[] event) {
-
+            
             if (alarm) {
                 alarm = false;
                 try {
@@ -1096,7 +1073,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             if (null != s) {
                 updateString(s);
             }
-
+            
             if (lickCountFlag > 0 && event[0] - lickCountTimeCount > 1000) {
                 switch (lickCountFlag) {
                     case 1:
@@ -1111,7 +1088,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 updateFreq();
                 lickCountFlag = 0;
             }
-
+            
             switch (event[1]) {
                 case 0:
                     if (lickCountFlag > 0) {
@@ -1127,7 +1104,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                         SwingUtilities.invokeLater(()
                                 -> jTxtPermText.setText(jTxtPermText.getText() + Integer.toString(event[2])));
                     }
-
+                    
                     break;
                 case 4:
                     currSta[event[2] - 1][2]++;//false
@@ -1206,10 +1183,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     chartHighSet = false;
                     updateChart(chartVal, (event[2] & 0x40) >> 6);
                     break;
-
+                
             }
         }
-
+        
         private void updateChart(int val, int grp) {
             if (grp == 0) {
                 ydata_A.add((double) val);
@@ -1222,7 +1199,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     ydata_B.remove(0);
                 }
             }
-
+            
             SwingUtilities.invokeLater(() -> {
                 if (chart.getSeriesMap().size() != 2) {
                     Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
@@ -1236,10 +1213,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 chart.updateXYSeries(dataNameB, null, ydata_B, null);
                 pnlChart.repaint();
                 pnlChart.revalidate();
-
+                
             });
         }
-
+        
         synchronized private void updateFreq() {
 //            if (lFreqMax + rFreqMax == 0) {
 //                return;
@@ -1258,16 +1235,16 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         public void updateString(String str) {
-
+            
             while (!logTxtQue.offer(str)) {
                 logTxtQue.poll();
             }
             this.txtUpdated.set(true);
-
+            
         }
-
+        
         private String evt2Str(int[] evt) {
             String s;
             switch (evt[1]) {
@@ -1287,7 +1264,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             }
             return s;
         }
-
+        
         public void clearFreq() {
             lFreq = 0;
             rFreq = 0;
@@ -1299,15 +1276,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     });
         }
     }
-
+    
     private long getPID() {
         String processName
                 = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
         return Long.parseLong(processName.split("@")[0]);
     }
-
+    
     class Alarm implements Runnable {
-
+        
         @Override
         public void run() {
             if (alarm) {
@@ -1323,12 +1300,12 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             alarm = true;
         }
     }
-
+    
     class Refresh implements Runnable {
-
+        
         @Override
         public void run() {
-            if (u.refreshTxtUpdateState()) {
+            if (u.refreshTxtUpdateState() && !chkPause.isSelected()) {
                 StringBuilder sb = new StringBuilder();
                 logTxtQue.iterator().forEachRemaining((s) -> {
                     sb.append(s);
@@ -1354,6 +1331,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton btnTemp;
     private javax.swing.JButton btnType;
     private javax.swing.JComboBox cboxCOMList;
+    private javax.swing.JCheckBox chkPause;
     private javax.swing.JButton jButton0;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -1366,7 +1344,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton jButton9;
     private javax.swing.JButton jButtonClearLickFreq;
     private javax.swing.JButton jButtonReset;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollFilePath;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1396,5 +1376,5 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private ScheduledFuture redBgTimerTask;
     private ScheduledFuture refreshTask;
     private ScriptExecutor se;
-
+    
 }
