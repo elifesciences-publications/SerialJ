@@ -5,8 +5,10 @@
  */
 package serialj;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Image;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -37,32 +39,39 @@ import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import jssc.SerialPortList;
+import org.knowm.xchart.CategoryChart;
+import org.knowm.xchart.Histogram;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
 
 /**
  *
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
-    
+
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
     final private String ver = "ZX Serial2 0.63 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
-    private String savePath = "E:\\ZXX\\2017\\";
-    
-    private XYChart chart = new XYChartBuilder().width(350).height(120).build();
+    private String savePath = "E:\\ZXX\\2018\\";
+
+    private XYChart chart = new XYChart(350, 120);
+    private CategoryChart histoChart = new CategoryChart(350, 120);
     final private String dataNameA = "data_A";
     final private String dataNameB = "data_B";
     private LinkedList<Double> ydata_A = new LinkedList<>();
     private LinkedList<Double> ydata_B = new LinkedList<>();
+    private LinkedList<Double> hist_A = new LinkedList<>();
+    private LinkedList<Double> hist_B = new LinkedList<>();
+    private Histogram histo_A = new Histogram(hist_A, 50, 0, 1000);
+    private Histogram histo_B = new Histogram(hist_B, 50, 0, 1000);
     final private LinkedBlockingQueue<String> logTxtQue;
 
     /**
@@ -86,24 +95,27 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         if (sp != null) {
             savePath = sp;
         }
-        
+
         logTxtQue = new LinkedBlockingQueue<>(50);
         ses = new ScheduledThreadPoolExecutor(1);
         u = new LogUpdator();
-        refreshTask = ses.scheduleWithFixedDelay(new Refresh(), 200, 200, TimeUnit.MILLISECONDS);
         chart.getStyler().setPlotMargin(2).setAxisTicksVisible(false)
                 .setChartBackgroundColor(Color.white).setLegendVisible(false);
 //        chart.addSeries(SerialName, null,ydata,null);
+        histoChart.addSeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData());
+        histoChart.addSeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData());
+        histoChart.getStyler().setXAxisDecimalPattern("0").setXAxisLabelRotation(90).setLegendVisible(false).setChartBackgroundColor(Color.white);
+
         initComponents();
-        
+
         btnEnableGrp = new JComponent[]{jButton0, jButton1, jButton2, jButton3, jButton4, jButton5,
             jButton6, jButton7, jButton8, jButton9, btnStop, jButtonReset, btnScript};
         btnDisableGrp = new JComponent[]{btnRecord, btnClear,
             btnDate, btnType, btnSlash, btnCOM, btnTemp};
         txtFileName.setEditable(true);
-        
+        frmHuman = new FrmHuman();
     }
-    
+
     private void initLogger() throws IOException {
         Logger rootLogger = Logger.getLogger("");
         rootLogger.setLevel(Level.FINE);
@@ -132,7 +144,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         lblEmpty = new javax.swing.JLabel();
         btnOpen = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
-        chkPause = new javax.swing.JCheckBox();
+        btnHumanPnl = new javax.swing.JButton();
         jScrollFilePath = new javax.swing.JScrollPane();
         txtFileName = new javax.swing.JTextArea();
         pnlBottom = new javax.swing.JPanel();
@@ -172,7 +184,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         jPanel4 = new javax.swing.JPanel();
         jTxtLickFreq = new javax.swing.JTextField();
         jButtonClearLickFreq = new javax.swing.JButton();
-        pnlChart = new XChartPanel<XYChart>(chart);
+        btnHisto = new javax.swing.JToggleButton();
+        pnlChart = new javax.swing.JPanel();
+        pnlLineChart = new XChartPanel<XYChart>(chart);
+        pnlHisto = new XChartPanel(histoChart);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
@@ -309,12 +324,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel3.add(btnClear, gridBagConstraints);
 
-        chkPause.setText("pause");
-        chkPause.setMinimumSize(new java.awt.Dimension(60, 23));
-        chkPause.setPreferredSize(new java.awt.Dimension(60, 23));
-        chkPause.addActionListener(new java.awt.event.ActionListener() {
+        btnHumanPnl.setText("H");
+        btnHumanPnl.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnHumanPnl.setMaximumSize(new java.awt.Dimension(50, 24));
+        btnHumanPnl.setMinimumSize(new java.awt.Dimension(50, 24));
+        btnHumanPnl.setPreferredSize(new java.awt.Dimension(50, 24));
+        btnHumanPnl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkPauseActionPerformed(evt);
+                btnHumanPnlActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -324,7 +341,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(chkPause, gridBagConstraints);
+        jPanel3.add(btnHumanPnl, gridBagConstraints);
 
         TopPanel.add(jPanel3, java.awt.BorderLayout.NORTH);
 
@@ -345,6 +362,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         getContentPane().add(TopPanel, java.awt.BorderLayout.NORTH);
 
         pnlBottom.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        pnlBottom.setPreferredSize(new java.awt.Dimension(389, 600));
         pnlBottom.setLayout(new java.awt.GridLayout(1, 2, 3, 3));
 
         LBPanel.setMinimumSize(new java.awt.Dimension(100, 100));
@@ -353,7 +371,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         jPanel2.setLayout(new java.awt.BorderLayout(2, 2));
 
-        jPanel1.setLayout(new java.awt.GridLayout());
+        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
         btnDate.setText("Date");
         btnDate.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -420,8 +438,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtCurrPref.setEditable(false);
         txtCurrPref.setColumns(20);
         txtCurrPref.setRows(2);
-        txtCurrPref.setMinimumSize(null);
-        txtCurrPref.setPreferredSize(null);
         jScrollPane4.setViewportView(txtCurrPref);
 
         jPanel2.add(jScrollPane4, java.awt.BorderLayout.SOUTH);
@@ -631,7 +647,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtLog.setEditable(false);
         txtLog.setColumns(12);
         txtLog.setRows(5);
-        txtLog.setPreferredSize(null);
         jScrollTxtLog.setViewportView(txtLog);
 
         pnlLogLCD.add(jScrollTxtLog, java.awt.BorderLayout.CENTER);
@@ -664,16 +679,34 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         });
         jPanel4.add(jButtonClearLickFreq, java.awt.BorderLayout.EAST);
 
+        btnHisto.setText("H");
+        btnHisto.setMargin(new java.awt.Insets(2, 3, 2, 3));
+        btnHisto.setMinimumSize(new java.awt.Dimension(40, 24));
+        btnHisto.setPreferredSize(new java.awt.Dimension(24, 24));
+        btnHisto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistoActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnHisto, java.awt.BorderLayout.WEST);
+
         RBPanel.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
         pnlBottom.add(RBPanel);
 
         getContentPane().add(pnlBottom, java.awt.BorderLayout.CENTER);
 
-        pnlChart.setMinimumSize(new java.awt.Dimension(100, 100));
-        pnlChart.setPreferredSize(new java.awt.Dimension(350, 120));
-        pnlChart.setLayout(new java.awt.GridLayout(1, 0));
-        getContentPane().add(pnlChart, java.awt.BorderLayout.PAGE_END);
+        pnlChart.setLayout(new java.awt.CardLayout());
+
+        pnlLineChart.setMinimumSize(new java.awt.Dimension(100, 100));
+        pnlLineChart.setPreferredSize(new java.awt.Dimension(350, 120));
+        pnlLineChart.setLayout(new java.awt.GridLayout(1, 0));
+        pnlChart.add(pnlLineChart, "line");
+
+        pnlHisto.setLayout(new java.awt.GridLayout(1, 0));
+        pnlChart.add(pnlHisto, "bar");
+
+        getContentPane().add(pnlChart, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -751,16 +784,16 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtCurrPref.setText("");
         txtLog.setText("");
         txtPerf.setText("");
-        ydata_A.clear();
-        ydata_B.clear();
+//        ydata_A.clear();
+//        ydata_B.clear();
         if (!chart.getSeriesMap().isEmpty()) {
             Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
             keyset.forEach((key) -> {
                 chart.removeSeries(key);
             });
         }
-        pnlChart.repaint();
-        pnlChart.revalidate();
+        pnlLineChart.repaint();
+        pnlLineChart.revalidate();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
@@ -778,6 +811,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         p.stop();
+        if (null != refreshTask && !refreshTask.isCancelled()) {
+            refreshTask.cancel(true);
+        }
         if (null != redBgTimerTask && !redBgTimerTask.isCancelled()) {
             redBgTimerTask.cancel(true);
         }
@@ -795,7 +831,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_btnStopActionPerformed
 
     private void btnRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecordActionPerformed
-        
+
         if (cboxCOMList.getSelectedIndex() < 0
                 || txtFileName.getText().endsWith("\\")) {
             return;
@@ -806,6 +842,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         }
         p = new PortAccessor(portNames[cboxCOMList.getSelectedIndex()]);
         p.setUpdater(u);
+        ((FrmHuman) frmHuman).setPort(p);
         if (p.setFileToPath(txtFileName.getText()) && p.start()) {
             for (JComponent jc : btnDisableGrp) {
                 jc.setEnabled(false);
@@ -817,7 +854,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
-            
+            refreshTask = ses.scheduleWithFixedDelay(new Refresh(), 200, 200, TimeUnit.MILLISECONDS);
             redBgTimerTask = ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
         }
     }//GEN-LAST:event_btnRecordActionPerformed
@@ -832,6 +869,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
     private void jButtonClearLickFreqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClearLickFreqActionPerformed
         u.clearFreq();
+        u.updateChart(0, -1);
+
     }//GEN-LAST:event_jButtonClearLickFreqActionPerformed
 
     private void btnScriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScriptActionPerformed
@@ -839,20 +878,17 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             JFileChooser fc = new JFileChooser();
             fc.setCurrentDirectory((new File(".")));
             fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                
+
                 @Override
                 public String getDescription() {
                     return "Script Files (.txt)";
                 }
-                
+
                 @Override
                 public boolean accept(File f) {
-                    if (f.isDirectory() || f.getAbsolutePath().endsWith(".txt")) {
-                        return true;
-                    }
-                    return false;
+                    return f.isDirectory() || f.getAbsolutePath().endsWith(".txt");
                 }
-                
+
             });
             int result = fc.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -883,35 +919,50 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         btnRecordActionPerformed(evt);
     }//GEN-LAST:event_btnTempActionPerformed
 
-    private void chkPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkPauseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chkPauseActionPerformed
-    
+    private void btnHumanPnlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHumanPnlActionPerformed
+        frmHuman.setVisible(true);
+    }//GEN-LAST:event_btnHumanPnlActionPerformed
+
+    private void btnHistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoActionPerformed
+        if (btnHisto.isSelected()) {
+            if (histoChart.getSeriesMap().keySet().size() != 2) {
+                btnHisto.setSelected(false);
+            } else {
+                CardLayout cl = (CardLayout) (pnlChart.getLayout());
+                cl.show(pnlChart, "bar");
+            }
+        } else {
+            CardLayout cl = (CardLayout) (pnlChart.getLayout());
+            cl.show(pnlChart, "line");
+
+        }
+    }//GEN-LAST:event_btnHistoActionPerformed
+
     @Override
     public void windowActivated(WindowEvent e) {
     }
-    
+
     @Override
     public void windowClosed(WindowEvent e) {
     }
-    
+
     @Override
     public void windowClosing(WindowEvent e) {
         refreshTask.cancel(true);
     }
-    
+
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-    
+
     @Override
     public void windowDeiconified(WindowEvent e) {
     }
-    
+
     @Override
     public void windowOpened(WindowEvent e) {
     }
-    
+
     @Override
     public void windowIconified(WindowEvent e) {
     }
@@ -942,9 +993,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             new UI().setVisible(true);
         });
     }
-    
+
     public class LogUpdator {
-        
+
         final private ArrayList<int[][]> perfHist;
         final private String[] hName;
         final private boolean updateStatusFile;
@@ -962,13 +1013,13 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         private int lcdX;
         private int lcdY;
         final private char[][] lcdText = new char[2][16];
+        private boolean chartHighSet = false;
         private int chartVal;
-        private boolean chartHighSet;
         final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
-            
+
             perfHist = new ArrayList<>();
             hName = EventNames.init();
             currSta = new int[3][5];//Hit,Miss,False,Reject,Abort
@@ -991,7 +1042,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     int[][] histSta = perfHist.get(i);
                     int performance = (histSta[0][0] + histSta[0][3] + histSta[1][0] + histSta[1][3]) * 100
                             / (Arrays.stream(histSta[0]).sum() + Arrays.stream(histSta[1]).sum());
-                    
+
                     perf.append(String.format("P %3d", performance)).append(",")
                             .append(genPerfStr(histSta[0])).append("\r\n");
                     if (Arrays.stream(histSta[1]).sum() > 0) {
@@ -1008,7 +1059,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 scrollPerf.validate();
                 vbar.setValue(vbar.getMaximum());
                 scrollPerf.validate();
-                
+
                 if (updateStatusFile) {
                     try (BufferedWriter bw = new BufferedWriter(new FileWriter(statusFilePath))) {
                         bw.write(s);
@@ -1019,13 +1070,13 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 currSta = new int[3][5];
             }
         }
-        
+
         public boolean refreshTxtUpdateState() {
             boolean tempu = this.txtUpdated.get();
             this.txtUpdated.set(false);
             return tempu;
         }
-        
+
         private String genPerfStr(int[] in) {
             StringBuilder sb = new StringBuilder();
             sb.append("H").append(String.format("%2d", in[0])).append("  ")
@@ -1035,7 +1086,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     .append("A").append(String.format("%2d", in[4]));
             return sb.toString();
         }
-        
+
         private void updateCurrSta() {
             final StringBuilder currStaStr = new StringBuilder();
             currStaStr.append(genPerfStr(currSta[0]));
@@ -1054,9 +1105,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         synchronized public void updateEvent(int[] event) {
-            
+
             if (alarm) {
                 alarm = false;
                 try {
@@ -1073,29 +1124,30 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             if (null != s) {
                 updateString(s);
             }
-            
+
             if (lickCountFlag > 0 && event[0] - lickCountTimeCount > 1000) {
                 switch (lickCountFlag) {
                     case 1:
-                        lFreq = lickCount[2];
+                        lFreq = lickCount[0];
                         lFreqMax = lFreqMax < lFreq ? lFreq : lFreqMax;
                         break;
                     case 2:
-                        rFreq = lickCount[3];
+                        rFreq = lickCount[1];
                         rFreqMax = rFreqMax < rFreq ? rFreq : rFreqMax;
                         break;
                 }
                 updateFreq();
                 lickCountFlag = 0;
             }
-            
+
             switch (event[1]) {
                 case 0:
                     if (lickCountFlag > 0) {
-                        if (event[2] > 0 && event[2] < 4) {
-                            lickCount[event[2]]++;
-                        } else {
-                            lickCount[2]++;
+                        //TODO:Lick Count
+                        if (event[2] == (int) 'L') {
+                            lickCount[0]++;
+                        } else if (event[2] == (int) 'R') {
+                            lickCount[1]++;
                         }
                     }
                     break;
@@ -1104,7 +1156,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                         SwingUtilities.invokeLater(()
                                 -> jTxtPermText.setText(jTxtPermText.getText() + Integer.toString(event[2])));
                     }
-                    
+
                     break;
                 case 4:
                     currSta[event[2] - 1][2]++;//false
@@ -1160,13 +1212,20 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                         txtLCD.setText(String.valueOf(this.lcdText[0]) + "\n" + String.valueOf(this.lcdText[1]));
                         this.lcdX++;
                     }
+
+                    if (frmHuman.isVisible()) {
+
+                        ((FrmHuman) frmHuman).updateTipTxt(
+                                String.valueOf(this.lcdText[0]), String.valueOf(this.lcdText[1]));
+
+                    }
                     break;
 //                case 21:
 //                    updatePermString(event[2]);
 //                    break;
                 case 22://
                     lickCountFlag = event[2];
-                    lickCount = new int[4];
+                    lickCount = new int[2];
                     lickCountTimeCount = event[0];
                     break;
                 case 61:
@@ -1180,26 +1239,37 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     break;
                 case 28:
                     chartVal += (event[2] & 0x3f);
-                    chartHighSet = false;
-                    updateChart(chartVal, (event[2] & 0x40) >> 6);
+                    if (chartHighSet) {
+                        chartHighSet = false;
+                        updateChart(chartVal, (event[2] & 0x40) >> 6);
+                    }
                     break;
-                
+
             }
         }
-        
-        private void updateChart(int val, int grp) {
-            if (grp == 0) {
+
+        public void updateChart(int val, int grp) {
+            if (grp < 0) {
+                hist_A.clear();
+                hist_B.clear();
+                ydata_A.clear();
+                ydata_B.clear();
+            } else if (grp == 0) {
+                hist_A.add((double) val);
                 ydata_A.add((double) val);
-                while (ydata_A.size() > 20) {
-                    ydata_A.remove(0);
+                if (ydata_A.size() > 20) {
+                    ydata_A.subList(0, ydata_A.size() - 20).clear();
                 }
             } else {
+                hist_B.add((double) val);
                 ydata_B.add((double) val);
-                while (ydata_B.size() > 20) {
-                    ydata_B.remove(0);
+                if (ydata_B.size() > 20) {
+                    ydata_B.subList(0, ydata_B.size() - 20).clear();
                 }
             }
-            
+            histo_A = new Histogram(hist_A, 50, 0, 1000);
+            histo_B = new Histogram(hist_B, 50, 0, 1000);
+
             SwingUtilities.invokeLater(() -> {
                 if (chart.getSeriesMap().size() != 2) {
                     Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
@@ -1209,22 +1279,30 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     chart.addSeries(dataNameA, null, ydata_A, null);
                     chart.addSeries(dataNameB, null, ydata_B, null);
                 }
+                if (histoChart.getSeriesMap().size() != 2) {
+                    Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
+                    histoKeyset.forEach((key) -> {
+                        histoChart.removeSeries(key);
+                    });
+                    histoChart.addSeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData());
+                    histoChart.addSeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData());
+                }
                 chart.updateXYSeries(dataNameA, null, ydata_A, null);
                 chart.updateXYSeries(dataNameB, null, ydata_B, null);
-                pnlChart.repaint();
-                pnlChart.revalidate();
-                
+                histoChart.updateCategorySeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData(), null);
+                histoChart.updateCategorySeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData(), null);
+
             });
         }
-        
+
         synchronized private void updateFreq() {
 //            if (lFreqMax + rFreqMax == 0) {
 //                return;
 //            }
             freqText.setLength(0);
-            freqText.append("L:").append(lFreq).append(", ").append("LMax:").append(lFreqMax)
+            freqText.append("L:").append(lFreq).append("/").append(lFreqMax)
                     .append("; ")
-                    .append("R:").append(rFreq).append(", ").append("RMax:").append(rFreqMax);
+                    .append("R:").append(rFreq).append("/").append(rFreqMax);
             final String s = freqText.toString();
             try {
                 SwingUtilities.invokeAndWait(
@@ -1235,16 +1313,16 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         public void updateString(String str) {
-            
+
             while (!logTxtQue.offer(str)) {
                 logTxtQue.poll();
             }
             this.txtUpdated.set(true);
-            
+
         }
-        
+
         private String evt2Str(int[] evt) {
             String s;
             switch (evt[1]) {
@@ -1264,7 +1342,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             }
             return s;
         }
-        
+
         public void clearFreq() {
             lFreq = 0;
             rFreq = 0;
@@ -1276,15 +1354,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     });
         }
     }
-    
+
     private long getPID() {
         String processName
                 = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
         return Long.parseLong(processName.split("@")[0]);
     }
-    
+
     class Alarm implements Runnable {
-        
+
         @Override
         public void run() {
             if (alarm) {
@@ -1300,20 +1378,30 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             alarm = true;
         }
     }
-    
+
     class Refresh implements Runnable {
-        
+
         @Override
         public void run() {
-            if (u.refreshTxtUpdateState() && !chkPause.isSelected()) {
+            if (u.refreshTxtUpdateState()) {
                 StringBuilder sb = new StringBuilder();
                 logTxtQue.iterator().forEachRemaining((s) -> {
                     sb.append(s);
                     sb.append("\r\n");
                 });
-                SwingUtilities.invokeLater(() -> txtLog.setText(sb.toString()));
+                SwingUtilities.invokeLater(() -> {
+                    txtLog.setText(sb.toString());
+                    pnlLineChart.repaint();
+                    pnlHisto.repaint();
+                });
             }
+
         }
+    }
+
+    @Override
+    final public void setIconImage(Image image) {
+        super.setIconImage(image);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1323,6 +1411,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton btnCOM;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDate;
+    private javax.swing.JToggleButton btnHisto;
+    private javax.swing.JButton btnHumanPnl;
     private javax.swing.JButton btnOpen;
     private javax.swing.JButton btnRecord;
     private javax.swing.JToggleButton btnScript;
@@ -1331,7 +1421,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton btnTemp;
     private javax.swing.JButton btnType;
     private javax.swing.JComboBox cboxCOMList;
-    private javax.swing.JCheckBox chkPause;
     private javax.swing.JButton jButton0;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -1358,6 +1447,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JPanel pnlBottom;
     private javax.swing.JPanel pnlBtn;
     private javax.swing.JPanel pnlChart;
+    private javax.swing.JPanel pnlHisto;
+    private javax.swing.JPanel pnlLineChart;
     private javax.swing.JPanel pnlLogLCD;
     private javax.swing.JPanel pnlNum;
     private javax.swing.JPanel pnlNumButton;
@@ -1372,9 +1463,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private final JComponent[] btnEnableGrp;
     private final JComponent[] btnDisableGrp;
     private boolean alarm = false;
-    private ScheduledExecutorService ses;
+    final private ScheduledExecutorService ses;
     private ScheduledFuture redBgTimerTask;
     private ScheduledFuture refreshTask;
     private ScriptExecutor se;
-    
+    final private JFrame frmHuman;
 }
