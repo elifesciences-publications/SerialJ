@@ -924,6 +924,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_btnHumanPnlActionPerformed
 
     private void btnHistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoActionPerformed
+        if (ydata_A.isEmpty() || ydata_B.isEmpty() || hist_A.isEmpty() || hist_B.isEmpty()) {
+            return;
+        }
         if (btnHisto.isSelected()) {
             if (histoChart.getSeriesMap().keySet().size() != 2) {
                 btnHisto.setSelected(false);
@@ -934,7 +937,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         } else {
             CardLayout cl = (CardLayout) (pnlChart.getLayout());
             cl.show(pnlChart, "line");
-
         }
     }//GEN-LAST:event_btnHistoActionPerformed
 
@@ -1272,12 +1274,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
             SwingUtilities.invokeLater(() -> {
                 if (chart.getSeriesMap().size() != 2) {
-                    Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
-                    keyset.forEach((key) -> {
-                        chart.removeSeries(key);
-                    });
-                    chart.addSeries(dataNameA, null, ydata_A, null);
-                    chart.addSeries(dataNameB, null, ydata_B, null);
+                    if (!(ydata_A.isEmpty() || ydata_B.isEmpty())) {
+                        Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
+                        keyset.forEach((key) -> {
+                            chart.removeSeries(key);
+                        });
+                        chart.addSeries(dataNameA, null, ydata_A, null);
+                        chart.addSeries(dataNameB, null, ydata_B, null);
+                    }
                 }
                 if (histoChart.getSeriesMap().size() != 2) {
                     Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
@@ -1287,8 +1291,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     histoChart.addSeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData());
                     histoChart.addSeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData());
                 }
-                chart.updateXYSeries(dataNameA, null, ydata_A, null);
-                chart.updateXYSeries(dataNameB, null, ydata_B, null);
+                if (!(ydata_A.isEmpty() || ydata_B.isEmpty())) {
+                    chart.updateXYSeries(dataNameA, null, ydata_A, null);
+                    chart.updateXYSeries(dataNameB, null, ydata_B, null);
+                }
                 histoChart.updateCategorySeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData(), null);
                 histoChart.updateCategorySeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData(), null);
 
