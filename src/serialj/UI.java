@@ -1017,7 +1017,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         final private char[][] lcdText = new char[2][16];
         private boolean chartHighSet = false;
         private int chartVal;
-        final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
+//        final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
@@ -1073,12 +1073,11 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             }
         }
 
-        public boolean refreshTxtUpdateState() {
-            boolean tempu = this.txtUpdated.get();
-            this.txtUpdated.set(false);
-            return tempu;
-        }
-
+//        public boolean refreshTxtUpdateState() {
+//            boolean tempu = this.txtUpdated.get();
+//            this.txtUpdated.set(false);
+//            return tempu;
+//        }
         private String genPerfStr(int[] in) {
             StringBuilder sb = new StringBuilder();
             sb.append("H").append(String.format("%2d", in[0])).append("  ")
@@ -1259,14 +1258,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             } else if (grp == 0) {
                 hist_A.add((double) val);
                 ydata_A.add((double) val);
-                if (ydata_A.size() > 20) {
-                    ydata_A.subList(0, ydata_A.size() - 20).clear();
+                if (ydata_A.size() > 30) {
+                    ydata_A.subList(0, ydata_A.size() - 30).clear();
                 }
             } else {
                 hist_B.add((double) val);
                 ydata_B.add((double) val);
-                if (ydata_B.size() > 20) {
-                    ydata_B.subList(0, ydata_B.size() - 20).clear();
+                if (ydata_B.size() > 30) {
+                    ydata_B.subList(0, ydata_B.size() - 30).clear();
                 }
             }
             histo_A = new Histogram(hist_A, 50, 0, 1000);
@@ -1274,12 +1273,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
             SwingUtilities.invokeLater(() -> {
                 if (chart.getSeriesMap().size() != 2) {
-                    if (!(ydata_A.isEmpty() || ydata_B.isEmpty())) {
-                        Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
-                        keyset.forEach((key) -> {
-                            chart.removeSeries(key);
-                        });
+                    Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
+                    keyset.forEach((key) -> {
+                        chart.removeSeries(key);
+                    });
+                    if (!ydata_A.isEmpty()) {
                         chart.addSeries(dataNameA, null, ydata_A, null);
+                    }
+                    if (!ydata_B.isEmpty()) {
                         chart.addSeries(dataNameB, null, ydata_B, null);
                     }
                 }
@@ -1291,8 +1292,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     histoChart.addSeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData());
                     histoChart.addSeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData());
                 }
-                if (!(ydata_A.isEmpty() || ydata_B.isEmpty())) {
+                if (!ydata_A.isEmpty()) {
                     chart.updateXYSeries(dataNameA, null, ydata_A, null);
+                }
+                if (!ydata_B.isEmpty()) {
                     chart.updateXYSeries(dataNameB, null, ydata_B, null);
                 }
                 histoChart.updateCategorySeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData(), null);
@@ -1325,7 +1328,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             while (!logTxtQue.offer(str)) {
                 logTxtQue.poll();
             }
-            this.txtUpdated.set(true);
+//            this.txtUpdated.set(true);
 
         }
 
@@ -1389,19 +1392,20 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         @Override
         public void run() {
-            if (u.refreshTxtUpdateState()) {
-                StringBuilder sb = new StringBuilder();
-                logTxtQue.iterator().forEachRemaining((s) -> {
-                    sb.append(s);
-                    sb.append("\r\n");
-                });
-                SwingUtilities.invokeLater(() -> {
-                    txtLog.setText(sb.toString());
-                    pnlLineChart.repaint();
-                    pnlHisto.repaint();
-                });
-            }
-
+//            if (u.refreshTxtUpdateState()) {
+            StringBuilder sb = new StringBuilder();
+            logTxtQue.iterator().forEachRemaining((s) -> {
+                sb.append(s);
+                sb.append("\r\n");
+            });
+            SwingUtilities.invokeLater(() -> {
+                txtLog.setText(sb.toString());
+                pnlLineChart.revalidate();
+                pnlLineChart.repaint();
+                pnlHisto.revalidate();
+                pnlHisto.repaint();
+            });
+//            }
         }
     }
 
