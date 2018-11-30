@@ -58,7 +58,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial2 0.63 @" + getPID();
+    final private String ver = "ZX Serial2 0.70 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2018\\";
 
@@ -1017,7 +1017,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         final private char[][] lcdText = new char[2][16];
         private boolean chartHighSet = false;
         private int chartVal;
-//        final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
+        final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
@@ -1073,11 +1073,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             }
         }
 
-//        public boolean refreshTxtUpdateState() {
-//            boolean tempu = this.txtUpdated.get();
-//            this.txtUpdated.set(false);
-//            return tempu;
-//        }
         private String genPerfStr(int[] in) {
             StringBuilder sb = new StringBuilder();
             sb.append("H").append(String.format("%2d", in[0])).append("  ")
@@ -1328,7 +1323,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             while (!logTxtQue.offer(str)) {
                 logTxtQue.poll();
             }
-//            this.txtUpdated.set(true);
+            this.txtUpdated.set(true);
 
         }
 
@@ -1392,14 +1387,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         @Override
         public void run() {
-//            if (u.refreshTxtUpdateState()) {
-            StringBuilder sb = new StringBuilder();
-            logTxtQue.iterator().forEachRemaining((s) -> {
-                sb.append(s);
-                sb.append("\r\n");
-            });
             SwingUtilities.invokeLater(() -> {
-                txtLog.setText(sb.toString());
+                if (u.txtUpdated.getAndSet(false)) {
+                    StringBuilder sb = new StringBuilder();
+                    logTxtQue.iterator().forEachRemaining((s) -> {
+                        sb.append(s);
+                        sb.append("\r\n");
+                    });
+                    txtLog.setText(sb.toString());
+                }
                 pnlLineChart.revalidate();
                 pnlLineChart.repaint();
                 pnlHisto.revalidate();

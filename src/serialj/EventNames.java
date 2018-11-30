@@ -11,7 +11,7 @@ package serialj;
  */
 public class EventNames {
 
-    final static private String[] trans = new String[86];
+    final static private String[] trans = new String[91];
 //    final static private String[] permMessage = new String[255];
 
     static public String[] init() {
@@ -174,14 +174,16 @@ public class EventNames {
 
         trans[79] = "LaserSwitch";
 
-        trans[82]="BallMove";
-        
+        trans[82] = "BallMove";
+
         trans[83] = "OdorE";
 
         trans[84] = "AbortTrial";
 
         trans[85] = "CorrectionCue";
-        
+        trans[89] = "Choice";
+        trans[90] = "Confidence";
+
 //
 //        //List of Permanent Messages
 //        permMessage[0] = "loop1step2";
@@ -202,7 +204,6 @@ public class EventNames {
 //        permMessage[109] = "DMS LR bothOdor L+-";
 //        permMessage[110] = "DMS LR baseline L+-";
 //        permMessage[111] = "DMS LR response L+-";
-
         return trans;
 
     }
@@ -213,5 +214,4 @@ public class EventNames {
 //        }
 //        return "";
 //    }
-
 }

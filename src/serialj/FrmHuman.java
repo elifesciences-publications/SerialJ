@@ -51,6 +51,19 @@ public class FrmHuman extends javax.swing.JFrame {
         btn5 = new javax.swing.JButton();
         btn6 = new javax.swing.JButton();
         btn7 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         btnMatch = new javax.swing.JButton();
         btnNonMatch = new javax.swing.JButton();
@@ -182,6 +195,114 @@ public class FrmHuman extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         getContentPane().add(jPanel3, gridBagConstraints);
 
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel6.setLayout(new java.awt.GridLayout(2, 1));
+
+        jPanel8.setLayout(new java.awt.GridLayout());
+
+        jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 1, 20)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("1（不确定，猜的）<<<-------------------------->>>9（确定正确）");
+        jLabel1.setAlignmentX(0.5F);
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jPanel8.add(jLabel1);
+
+        jPanel6.add(jPanel8);
+
+        jPanel7.setLayout(new java.awt.GridLayout());
+
+        jButton1.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton1.setText("1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton1);
+
+        jButton2.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton2.setText("2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton2);
+
+        jButton3.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton3.setText("3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton3);
+
+        jButton4.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton4.setText("4");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton4);
+
+        jButton5.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton5.setText("5");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton5);
+
+        jButton6.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton6.setText("6");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton6);
+
+        jButton7.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton7.setText("7");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton7);
+
+        jButton8.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton8.setText("8");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton8);
+
+        jButton9.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jButton9.setText("9");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        jPanel7.add(jButton9);
+
+        jPanel6.add(jPanel7);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        getContentPane().add(jPanel6, gridBagConstraints);
+
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new java.awt.GridLayout(1, 0, 6, 0));
 
@@ -209,7 +330,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 2.0;
@@ -289,6 +410,42 @@ public class FrmHuman extends javax.swing.JFrame {
         );
     }//GEN-LAST:event_rdoSortActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        p.writeByte((byte) 0x31);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        p.writeByte((byte) 0x32);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        p.writeByte((byte) 0x33);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        p.writeByte((byte) 0x34);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        p.writeByte((byte) 0x35);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        p.writeByte((byte) 0x36);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        p.writeByte((byte) 0x37);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        p.writeByte((byte) 0x38);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        p.writeByte((byte) 0x39);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
     public void updateTipTxt(String str1, String str2) {
         SwingUtilities.invokeLater(() -> {
             if (str1.startsWith("1 for match")) {
@@ -338,6 +495,10 @@ public class FrmHuman extends javax.swing.JFrame {
                 lblHumanTips.setText("请辨别气味并保持记忆");
             } else if (str1.startsWith("Pls_Choose")) {
                 lblHumanTips.setText("请选择气味");
+            } else if (str1.startsWith("Confidence")) {
+                lblHumanTips.setText("请选择答案确定程度");
+            } else if (str1.startsWith("OdorPrime")) {
+                lblHumanTips.setText("气味即将出现");
             }
         });
     }
@@ -347,7 +508,6 @@ public class FrmHuman extends javax.swing.JFrame {
 //            lblHumanTips.setText(str);
 //        });
 //    }
-
 //    /**
 //     * @param args the command line arguments
 //     */
@@ -394,11 +554,24 @@ public class FrmHuman extends javax.swing.JFrame {
     private javax.swing.JButton btnMatch;
     private javax.swing.JButton btnNonMatch;
     private javax.swing.ButtonGroup btnTaskType;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JLabel lblHumanTips;
     private javax.swing.JRadioButton rdoMatch;
     private javax.swing.JRadioButton rdoSort;
