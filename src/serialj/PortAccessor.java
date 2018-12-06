@@ -20,6 +20,7 @@ public class PortAccessor {
     final private DataParser dp;
     final private String portName;
     private UI.LogUpdator updator;
+    private Thread dpThread;
 
     public PortAccessor(String s) {
         this.portName = s;
@@ -47,8 +48,8 @@ public class PortAccessor {
     }
 
     public boolean start() {
-
-        (new Thread(dp, "data")).start();
+        dpThread=new Thread(dp, "data");
+        dpThread.start();
         try {
             serialPort = new SerialPort(portName);
             serialPort.openPort();//Open port
@@ -73,6 +74,7 @@ public class PortAccessor {
                 Thread.sleep(50);
             }
             dp.stop();
+            dpThread.join();
         } catch (SerialPortException | InterruptedException ex) {
             updator.updateString(ex.toString() + "\r\n");
         }

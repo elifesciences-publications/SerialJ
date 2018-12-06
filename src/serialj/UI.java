@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,20 +59,12 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial2 0.70 @" + getPID();
+    final private String ver = "ZX Serial2 0.73 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2018\\";
 
     private XYChart chart = new XYChart(350, 120);
     private CategoryChart histoChart = new CategoryChart(350, 120);
-    final private String dataNameA = "data_A";
-    final private String dataNameB = "data_B";
-    private LinkedList<Double> ydata_A = new LinkedList<>();
-    private LinkedList<Double> ydata_B = new LinkedList<>();
-    private LinkedList<Double> hist_A = new LinkedList<>();
-    private LinkedList<Double> hist_B = new LinkedList<>();
-    private Histogram histo_A = new Histogram(hist_A, 50, 0, 1000);
-    private Histogram histo_B = new Histogram(hist_B, 50, 0, 1000);
     final private LinkedBlockingQueue<String> logTxtQue;
 
     /**
@@ -101,9 +94,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         u = new LogUpdator();
         chart.getStyler().setPlotMargin(2).setAxisTicksVisible(false)
                 .setChartBackgroundColor(Color.white).setLegendVisible(false);
-//        chart.addSeries(SerialName, null,ydata,null);
-        histoChart.addSeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData());
-        histoChart.addSeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData());
         histoChart.getStyler().setXAxisDecimalPattern("0").setXAxisLabelRotation(90).setLegendVisible(false).setChartBackgroundColor(Color.white);
 
         initComponents();
@@ -194,17 +184,17 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         setMaximumSize(new java.awt.Dimension(512, 2147483647));
         setMinimumSize(new java.awt.Dimension(300, 240));
         setPreferredSize(new java.awt.Dimension(375, 470));
-        getContentPane().setLayout(new java.awt.BorderLayout(6, 6));
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         TopPanel.setMinimumSize(new java.awt.Dimension(350, 75));
-        TopPanel.setPreferredSize(new java.awt.Dimension(350, 75));
+        TopPanel.setPreferredSize(new java.awt.Dimension(350, 125));
         TopPanel.setLayout(new java.awt.BorderLayout());
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
         cboxCOMList.setModel(new javax.swing.DefaultComboBoxModel(portNames));
-        cboxCOMList.setMinimumSize(new java.awt.Dimension(70, 24));
-        cboxCOMList.setPreferredSize(new java.awt.Dimension(70, 24));
+        cboxCOMList.setMinimumSize(new java.awt.Dimension(80, 24));
+        cboxCOMList.setPreferredSize(new java.awt.Dimension(80, 24));
         cboxCOMList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboxCOMListActionPerformed(evt);
@@ -214,7 +204,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weightx = 2.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         jPanel3.add(cboxCOMList, gridBagConstraints);
@@ -359,7 +349,13 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         TopPanel.add(jScrollFilePath, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(TopPanel, java.awt.BorderLayout.NORTH);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(TopPanel, gridBagConstraints);
 
         pnlBottom.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         pnlBottom.setPreferredSize(new java.awt.Dimension(389, 600));
@@ -595,6 +591,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         pnlNumButton.add(pnlNum, java.awt.BorderLayout.CENTER);
 
+        pnlBtn.setMinimumSize(new java.awt.Dimension(50, 51));
+        pnlBtn.setPreferredSize(new java.awt.Dimension(50, 51));
         pnlBtn.setLayout(new java.awt.GridLayout(2, 1, 3, 3));
 
         btnScript.setText("Script");
@@ -694,19 +692,31 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         pnlBottom.add(RBPanel);
 
-        getContentPane().add(pnlBottom, java.awt.BorderLayout.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 3.0;
+        getContentPane().add(pnlBottom, gridBagConstraints);
 
         pnlChart.setLayout(new java.awt.CardLayout());
 
         pnlLineChart.setMinimumSize(new java.awt.Dimension(100, 100));
-        pnlLineChart.setPreferredSize(new java.awt.Dimension(350, 120));
+        pnlLineChart.setPreferredSize(new java.awt.Dimension(350, 350));
         pnlLineChart.setLayout(new java.awt.GridLayout(1, 0));
         pnlChart.add(pnlLineChart, "line");
 
         pnlHisto.setLayout(new java.awt.GridLayout(1, 0));
         pnlChart.add(pnlHisto, "bar");
 
-        getContentPane().add(pnlChart, java.awt.BorderLayout.SOUTH);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 2.0;
+        getContentPane().add(pnlChart, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -786,12 +796,12 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtPerf.setText("");
 //        ydata_A.clear();
 //        ydata_B.clear();
-        if (!chart.getSeriesMap().isEmpty()) {
-            Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
-            keyset.forEach((key) -> {
-                chart.removeSeries(key);
-            });
-        }
+//        if (!chart.getSeriesMap().isEmpty()) {
+//            Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
+//            keyset.forEach((key) -> {
+//                chart.removeSeries(key);
+//            });
+//        }
         pnlLineChart.repaint();
         pnlLineChart.revalidate();
     }//GEN-LAST:event_btnClearActionPerformed
@@ -854,7 +864,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             String comPort = portNames[cboxCOMList.getSelectedIndex()];
             this.setTitle(comPort + " " + ver);
             this.statusFilePath = statusFileParent + comPort + "Status.txt";
-            refreshTask = ses.scheduleWithFixedDelay(new Refresh(), 200, 200, TimeUnit.MILLISECONDS);
+            refreshTask = ses.scheduleWithFixedDelay(new Refresh(), 500, 500, TimeUnit.MILLISECONDS);
             redBgTimerTask = ses.scheduleWithFixedDelay((new Alarm()), 60, 60, TimeUnit.SECONDS);
         }
     }//GEN-LAST:event_btnRecordActionPerformed
@@ -924,19 +934,24 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_btnHumanPnlActionPerformed
 
     private void btnHistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoActionPerformed
-        if (ydata_A.isEmpty() || ydata_B.isEmpty() || hist_A.isEmpty() || hist_B.isEmpty()) {
+        if (u.isEmptyChart()) {
+            btnHisto.setSelected(!btnHisto.isSelected());
             return;
         }
         if (btnHisto.isSelected()) {
-            if (histoChart.getSeriesMap().keySet().size() != 2) {
+            if (histoChart.getSeriesMap().keySet().isEmpty()) {
                 btnHisto.setSelected(false);
             } else {
                 CardLayout cl = (CardLayout) (pnlChart.getLayout());
                 cl.show(pnlChart, "bar");
             }
         } else {
-            CardLayout cl = (CardLayout) (pnlChart.getLayout());
-            cl.show(pnlChart, "line");
+            if (chart.getSeriesMap().keySet().isEmpty()) {
+                btnHisto.setSelected(true);
+            } else {
+                CardLayout cl = (CardLayout) (pnlChart.getLayout());
+                cl.show(pnlChart, "line");
+            }
         }
     }//GEN-LAST:event_btnHistoActionPerformed
 
@@ -951,6 +966,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {
         refreshTask.cancel(true);
+        redBgTimerTask.cancel(true);
     }
 
     @Override
@@ -1018,6 +1034,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         private boolean chartHighSet = false;
         private int chartVal;
         final private AtomicBoolean txtUpdated = new AtomicBoolean(false);
+        final private AtomicBoolean chartUpdated = new AtomicBoolean(false);
+        final private String dataNameA = "data_A";
+        final private String dataNameB = "data_B";
+        final private String histoNameA = "histo_A";
+        final private String histoNameB = "histo_B";
+        final private LinkedList<Double> hist_A = new LinkedList<>();
+        final private LinkedList<Double> hist_B = new LinkedList<>();
+        private Histogram histo_A = new Histogram(hist_A, 50, 0, 1000);
+        private Histogram histo_B = new Histogram(hist_B, 50, 0, 1000);
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
@@ -1244,59 +1269,74 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             }
         }
 
-        public void updateChart(int val, int grp) {
+        public boolean isEmptyChart() {
+            return (hist_A.isEmpty() && hist_B.isEmpty());
+        }
+
+        synchronized public void updateChart(int val, int grp) {
             if (grp < 0) {
                 hist_A.clear();
                 hist_B.clear();
-                ydata_A.clear();
-                ydata_B.clear();
             } else if (grp == 0) {
                 hist_A.add((double) val);
-                ydata_A.add((double) val);
-                if (ydata_A.size() > 30) {
-                    ydata_A.subList(0, ydata_A.size() - 30).clear();
-                }
             } else {
                 hist_B.add((double) val);
-                ydata_B.add((double) val);
-                if (ydata_B.size() > 30) {
-                    ydata_B.subList(0, ydata_B.size() - 30).clear();
-                }
             }
-            histo_A = new Histogram(hist_A, 50, 0, 1000);
-            histo_B = new Histogram(hist_B, 50, 0, 1000);
+            if (hist_A.size() > 1000) {
+                hist_A.subList(0, hist_A.size() - 1000).clear();
+            }
+            if (hist_B.size() > 1000) {
+                hist_B.subList(0, hist_B.size() - 1000).clear();
+            }
+            if (hist_A.isEmpty() && hist_B.isEmpty()) {
+                return;
+            }
 
-            SwingUtilities.invokeLater(() -> {
-                if (chart.getSeriesMap().size() != 2) {
-                    Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
-                    keyset.forEach((key) -> {
-                        chart.removeSeries(key);
-                    });
-                    if (!ydata_A.isEmpty()) {
-                        chart.addSeries(dataNameA, null, ydata_A, null);
-                    }
-                    if (!ydata_B.isEmpty()) {
-                        chart.addSeries(dataNameB, null, ydata_B, null);
-                    }
-                }
-                if (histoChart.getSeriesMap().size() != 2) {
-                    Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
-                    histoKeyset.forEach((key) -> {
-                        histoChart.removeSeries(key);
-                    });
-                    histoChart.addSeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData());
-                    histoChart.addSeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData());
-                }
+            if (!btnHisto.isSelected() || chart.getSeriesMap().keySet().isEmpty()) {
+                List<Double> ydata_A = hist_A.size() > 30
+                        ? hist_A.subList(hist_A.size() - 30, hist_A.size())
+                        : hist_A;
+                List<Double> ydata_B = hist_B.size() > 30
+                        ? hist_B.subList(hist_B.size() - 30, hist_B.size())
+                        : hist_B;
+                Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
                 if (!ydata_A.isEmpty()) {
-                    chart.updateXYSeries(dataNameA, null, ydata_A, null);
+                    if (!keyset.contains(dataNameA)) {
+                        chart.addSeries(dataNameA, null, ydata_A, null);
+                    } else {
+                        chart.updateXYSeries(dataNameA, null, ydata_A, null);
+                    }
                 }
                 if (!ydata_B.isEmpty()) {
-                    chart.updateXYSeries(dataNameB, null, ydata_B, null);
+                    if (!keyset.contains(dataNameB)) {
+                        chart.addSeries(dataNameB, null, ydata_B, null);
+                    } else {
+                        chart.updateXYSeries(dataNameB, null, ydata_B, null);
+                    }
                 }
-                histoChart.updateCategorySeries("histoA", histo_A.getxAxisData(), histo_A.getyAxisData(), null);
-                histoChart.updateCategorySeries("histoB", histo_B.getxAxisData(), histo_B.getyAxisData(), null);
 
-            });
+            }
+            if (histoChart.getSeriesMap().keySet().isEmpty() || btnHisto.isSelected()) {
+                Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
+                if (!hist_A.isEmpty()) {
+                    histo_A = new Histogram(hist_A, 50, 0, 1000);
+                    if (!histoKeyset.contains(histoNameA)) {
+                        histoChart.addSeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData());
+                    } else {
+                        histoChart.updateCategorySeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData(), null);
+                    }
+                }
+                if (!hist_B.isEmpty()) {
+                    histo_B = new Histogram(hist_B, 50, 0, 1000);
+                    if (!histoKeyset.contains(histoNameB)) {
+                        histoChart.addSeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData());
+                    } else {
+                        histoChart.updateCategorySeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData(), null);
+                    }
+                }
+            }
+
+            this.chartUpdated.set(true);
         }
 
         synchronized private void updateFreq() {
@@ -1323,7 +1363,22 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             while (!logTxtQue.offer(str)) {
                 logTxtQue.poll();
             }
-            this.txtUpdated.set(true);
+            if (null == refreshTask || refreshTask.isCancelled() || refreshTask.isDone()) {
+                StringBuilder sb = new StringBuilder();
+                logTxtQue.iterator().forEachRemaining((s) -> {
+                    sb.append(s);
+                    sb.append("\r\n");
+                });
+                if (SwingUtilities.isEventDispatchThread()) {
+                    txtLog.setText(sb.toString());
+                } else {
+                    SwingUtilities.invokeLater(() -> {
+                        txtLog.setText(sb.toString());
+                    });
+                }
+            } else {
+                this.txtUpdated.set(true);
+            }
 
         }
 
@@ -1396,10 +1451,12 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     });
                     txtLog.setText(sb.toString());
                 }
-                pnlLineChart.revalidate();
-                pnlLineChart.repaint();
-                pnlHisto.revalidate();
-                pnlHisto.repaint();
+                if (u.chartUpdated.getAndSet(false)) {
+                    pnlLineChart.revalidate();
+                    pnlLineChart.repaint();
+                    pnlHisto.revalidate();
+                    pnlHisto.repaint();
+                }
             });
 //            }
         }

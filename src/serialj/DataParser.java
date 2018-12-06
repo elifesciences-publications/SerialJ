@@ -12,16 +12,18 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Xiaoxing
  */
 public class DataParser implements Runnable {
-    
-    private boolean stop;
+
+    private volatile boolean stop;
     final private BlockingQueue<int[]> q;
     final private ArrayList<int[]> eventList;
     private int[] currEvent;
@@ -30,21 +32,24 @@ public class DataParser implements Runnable {
     private int lastWriteTime;
     private String pathToFile;
     private UI.LogUpdator updater;
-    
+
     public DataParser() {
         this.lastWriteTime = 0;
         this.stop = false;
         this.q = new LinkedBlockingQueue<>();
         this.eventList = new ArrayList<>();
         this.currEvent = new int[3];
-        
+
     }
-    
+
     public boolean setPathToFile(String pathToFile) {
         this.pathToFile = pathToFile;
         File targetFile = new File(pathToFile);
         if (targetFile.exists() && !pathToFile.toLowerCase().contains("temp")) {
             updater.updateString("File Already Exist!");
+            SwingUtilities.invokeLater(() -> {
+
+            });
             return false;
         }
         File parent = targetFile.getParentFile();
@@ -54,16 +59,16 @@ public class DataParser implements Runnable {
         }
         return true;
     }
-    
+
     public void setUpdater(UI.LogUpdator updater) {
         this.updater = updater;
     }
-    
+
     private int getIntTime() {
         long timeL = System.currentTimeMillis() & 0x7FFFFFFF;
         return (int) timeL;
     }
-    
+
     private void process(int[] e) {
         for (int i : e) {
             if ((i & 0x80) == 0) { //cmd
@@ -72,7 +77,7 @@ public class DataParser implements Runnable {
                     updateEvents(currEvent);
                     currEvent = new int[3];
                 }
-                
+
                 currEvent[0] = getIntTime();
                 currEvent[1] = i;
                 ctrlIsSet = true;
@@ -86,46 +91,44 @@ public class DataParser implements Runnable {
                 ctrlIsSet = false;
             }
         }
-        
+
     }
-    
+
     private void updateEvents(int[] event) {
         event[0] = getIntTime();
         eventList.add(event);
         updater.updateEvent(event);
-        
+
         if (event[0] > lastWriteTime + 60000) {
             lastWriteTime = event[0];
             writeList(eventList, this.pathToFile);
             updater.updateString("File Saved");
         }
     }
-    
+
     public void put(int[] in) {
-        
+
         try {
             q.put(in);
         } catch (InterruptedException ex) {
             updater.updateString(ex.toString());
         }
     }
-    
+
     @Override
     public void run() {
         while (!stop) {
             try {
-                int[] e = q.take();
-                process(e);
-//                updater.updateEvent(new int[]{(int) System.currentTimeMillis() & 0x7fffffff, 0x55, 1, 2, 0xAA});
-//                Thread.sleep(ThreadLocalRandom.current().nextInt(20, 2000));
+                int[] e = q.poll(200, TimeUnit.MILLISECONDS);
+                if (null != e) {
+                    process(e);
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(DataParser.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
         }
-        
     }
-    
+
     private void writeList(ArrayList<int[]> l, String pathToFile) {
         File targetFile = new File(pathToFile);
         File parent = targetFile.getParentFile();
@@ -138,7 +141,7 @@ public class DataParser implements Runnable {
             updater.updateString(e.toString());
         }
     }
-    
+
     public void stop() {
         stop = true;
         long millis = System.currentTimeMillis();
@@ -146,10 +149,10 @@ public class DataParser implements Runnable {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ie) {
-                
+
             }
         }
         writeList(eventList, this.pathToFile);
     }
-    
+
 }
