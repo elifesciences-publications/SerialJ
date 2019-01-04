@@ -156,6 +156,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;&lt;html&gt;&#x7532;&#x6c14;&#x5473;&lt;br&gt;5/6&lt;/html&gt;&quot;" type="code"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn2ActionPerformed"/>
@@ -169,6 +170,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;&lt;html&gt;&#x7532;&#x6c14;&#x5473;&lt;br&gt;4/6&lt;/html&gt;&quot;" type="code"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn3ActionPerformed"/>
@@ -193,6 +195,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;&lt;html&gt;&#x4e59;&#x6c14;&#x5473;&lt;br&gt;4/6&lt;/html&gt;&quot;" type="code"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn5ActionPerformed"/>
@@ -206,6 +209,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;&lt;html&gt;&#x4e59;&#x6c14;&#x5473;&lt;br&gt;5/6&lt;/html&gt;&quot;" type="code"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn6ActionPerformed"/>
@@ -258,7 +262,7 @@
                   <Font name="Microsoft YaHei" size="20" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="1&#xff08;&#x4e0d;&#x786e;&#x5b9a;&#xff0c;&#x731c;&#x7684;&#xff09;&lt;&lt;&lt;--------------------------&gt;&gt;&gt;9&#xff08;&#x786e;&#x5b9a;&#x6b63;&#x786e;&#xff09;"/>
+                <Property name="text" type="java.lang.String" value="1&#xff08;&#x4e0d;&#x786e;&#x5b9a;&#xff0c;&#x731c;&#x7684;&#xff09;&lt;&lt;&lt;--------------------------&gt;&gt;&gt;3&#xff08;&#x786e;&#x5b9a;&#x6b63;&#x786e;&#xff09;"/>
                 <Property name="alignmentX" type="float" value="0.5"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
               </Properties>
@@ -311,6 +315,7 @@
                   <Font name="Microsoft YaHei" size="24" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="4"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
@@ -322,6 +327,7 @@
                   <Font name="Microsoft YaHei" size="24" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="5"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
@@ -333,6 +339,7 @@
                   <Font name="Microsoft YaHei" size="24" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="6"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
@@ -344,6 +351,7 @@
                   <Font name="Microsoft YaHei" size="24" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="7"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton7ActionPerformed"/>
@@ -355,6 +363,7 @@
                   <Font name="Microsoft YaHei" size="24" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="8"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton8ActionPerformed"/>
@@ -366,6 +375,7 @@
                   <Font name="Microsoft YaHei" size="24" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="9"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton9ActionPerformed"/>

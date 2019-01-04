@@ -20,6 +20,16 @@ public class FrmHuman extends javax.swing.JFrame {
      */
     public FrmHuman() {
         initComponents();
+        jPanel7.remove(jButton4);
+        jPanel7.remove(jButton5);
+        jPanel7.remove(jButton6);
+        jPanel7.remove(jButton7);
+        jPanel7.remove(jButton8);
+        jPanel7.remove(jButton9);
+        jPanel3.remove(btn2);
+        jPanel3.remove(btn3);
+        jPanel3.remove(btn5);
+        jPanel3.remove(btn6);
     }
 
     public void setPort(PortAccessor p) {
@@ -134,6 +144,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         btn2.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
         btn2.setText("<html>甲气味<br>5/6</html>");
+        btn2.setEnabled(false);
         btn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn2ActionPerformed(evt);
@@ -143,6 +154,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         btn3.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
         btn3.setText("<html>甲气味<br>4/6</html>");
+        btn3.setEnabled(false);
         btn3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn3ActionPerformed(evt);
@@ -161,6 +173,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         btn5.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
         btn5.setText("<html>乙气味<br>4/6</html>");
+        btn5.setEnabled(false);
         btn5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn5ActionPerformed(evt);
@@ -170,6 +183,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         btn6.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
         btn6.setText("<html>乙气味<br>5/6</html>");
+        btn6.setEnabled(false);
         btn6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn6ActionPerformed(evt);
@@ -198,18 +212,18 @@ public class FrmHuman extends javax.swing.JFrame {
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel6.setLayout(new java.awt.GridLayout(2, 1));
 
-        jPanel8.setLayout(new java.awt.GridLayout());
+        jPanel8.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 1, 20)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("1（不确定，猜的）<<<-------------------------->>>9（确定正确）");
+        jLabel1.setText("1（不确定，猜的）<<<-------------------------->>>3（确定正确）");
         jLabel1.setAlignmentX(0.5F);
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jPanel8.add(jLabel1);
 
         jPanel6.add(jPanel8);
 
-        jPanel7.setLayout(new java.awt.GridLayout());
+        jPanel7.setLayout(new java.awt.GridLayout(1, 0));
 
         jButton1.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton1.setText("1");
@@ -240,6 +254,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jButton4.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton4.setText("4");
+        jButton4.setEnabled(false);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -249,6 +264,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jButton5.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton5.setText("5");
+        jButton5.setEnabled(false);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -258,6 +274,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jButton6.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton6.setText("6");
+        jButton6.setEnabled(false);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -267,6 +284,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jButton7.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton7.setText("7");
+        jButton7.setEnabled(false);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -276,6 +294,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jButton8.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton8.setText("8");
+        jButton8.setEnabled(false);
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -285,6 +304,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jButton9.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jButton9.setText("9");
+        jButton9.setEnabled(false);
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
@@ -361,7 +381,9 @@ public class FrmHuman extends javax.swing.JFrame {
     }//GEN-LAST:event_btn2ActionPerformed
 
     private void btn4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn4ActionPerformed
-        p.writeByte((byte) 0x34);
+        p.writeByte((byte) 0x32);
+//        p.writeByte((byte) 0x34);
+
     }//GEN-LAST:event_btn4ActionPerformed
 
     private void btn5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn5ActionPerformed
@@ -373,7 +395,8 @@ public class FrmHuman extends javax.swing.JFrame {
     }//GEN-LAST:event_btn6ActionPerformed
 
     private void btn7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn7ActionPerformed
-        p.writeByte((byte) 0x37);
+//        p.writeByte((byte) 0x37);
+        p.writeByte((byte) 0x33);
     }//GEN-LAST:event_btn7ActionPerformed
 
     private void rdoMatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoMatchActionPerformed
@@ -399,11 +422,11 @@ public class FrmHuman extends javax.swing.JFrame {
                 btnMatch.setEnabled(false);
                 btnNonMatch.setEnabled(false);
                 btn1.setEnabled(true);
-                btn2.setEnabled(true);
-                btn3.setEnabled(true);
+//                btn2.setEnabled(true);
+//                btn3.setEnabled(true);
                 btn4.setEnabled(true);
-                btn5.setEnabled(true);
-                btn6.setEnabled(true);
+//                btn5.setEnabled(true);
+//                btn6.setEnabled(true);
                 btn7.setEnabled(true);
             }
         }
@@ -472,10 +495,12 @@ public class FrmHuman extends javax.swing.JFrame {
                         lblHumanTips.setText("全部是甲气味");
                         break;
                     case "2":
-                        lblHumanTips.setText("甲气味 5/6");
+//                        lblHumanTips.setText("甲气味 5/6");
+                        lblHumanTips.setText("甲乙各一半");
                         break;
                     case "3":
-                        lblHumanTips.setText("甲气味 4/6");
+//                        lblHumanTips.setText("甲气味 4/6");
+                        lblHumanTips.setText("全部是乙气味");
                         break;
                     case "4":
                         lblHumanTips.setText("甲乙各一半");

@@ -11,178 +11,178 @@ package serialj;
  */
 public class EventNames {
 
-    final static private String[] trans = new String[91];
+    final static private String[] EvtAnno = new String[91];
 //    final static private String[] permMessage = new String[255];
 
     static public String[] init() {
 
-        trans[0] = "Lick";
+        EvtAnno[0] = "Lick";
 
-        trans[1] = "Keypad";
+        EvtAnno[1] = "Keypad";
 
-        trans[2] = "DebugInfo";
+        EvtAnno[2] = "DebugInfo";
 
-        trans[3] = "IO";
+        EvtAnno[3] = "IO";
 
-        trans[4] = "FalseAlarm";
+        EvtAnno[4] = "FalseAlarm";
 
-        trans[5] = "CorrectRejection";
+        EvtAnno[5] = "CorrectRejection";
 
-        trans[6] = "Miss";
+        EvtAnno[6] = "Miss";
 
-        trans[7] = "Hit";
+        EvtAnno[7] = "Hit";
 
-        trans[8] = "Water_sweet";
+        EvtAnno[8] = "Water_sweet";
 
-        trans[9] = "Odor_A";
+        EvtAnno[9] = "Odor_A";
 
-        trans[10] = "Odor_B";
+        EvtAnno[10] = "Odor_B";
 
-        trans[11] = "Distractor Sample";
+        EvtAnno[11] = "Distractor Sample";
 
-        trans[12] = "Distractor Test";
+        EvtAnno[12] = "Distractor Test";
 
-        trans[13] = "Valve6";
+        EvtAnno[13] = "Valve6";
 
-        trans[14] = "Valve7";
+        EvtAnno[14] = "Valve7";
 
-        trans[15] = "Valve8";
+        EvtAnno[15] = "Valve8";
 
-        trans[16] = "Out1";
+        EvtAnno[16] = "Out1";
 
-        trans[17] = "Out2";
+        EvtAnno[17] = "Out2";
 
-        trans[18] = "Out3";
+        EvtAnno[18] = "Out3";
 
-        trans[19] = "Out4";
+        EvtAnno[19] = "Out4";
 
-        trans[20] = "Trial_Wait";
+        EvtAnno[20] = "Trial_Wait";
 
-        trans[21] = "S1S2";
+        EvtAnno[21] = "S1S2";
 
-        trans[22] = "S1S3";
+        EvtAnno[22] = "S1S3";
 
-        trans[23] = "High Value";
+        EvtAnno[23] = "High Value";
 
-        trans[24] = "Low Value";
+        EvtAnno[24] = "Low Value";
 
-        trans[25] = "S2S1";
+        EvtAnno[25] = "S2S1";
 
-        trans[26] = "S2S2";
+        EvtAnno[26] = "S2S2";
 
-        trans[27] = "S2S3";
+        EvtAnno[27] = "S2S3";
 
-        trans[28] = "S2S4";
+        EvtAnno[28] = "S2S4";
 
-        trans[29] = "S2S5";
+        EvtAnno[29] = "S2S5";
 
-        trans[30] = "S3S1";
+        EvtAnno[30] = "S3S1";
 
-        trans[31] = "S3S2";
+        EvtAnno[31] = "S3S2";
 
-        trans[32] = "S3S3";
+        EvtAnno[32] = "S3S3";
 
-        trans[33] = "S3S4";
+        EvtAnno[33] = "S3S4";
 
-        trans[34] = "S3S5";
+        EvtAnno[34] = "S3S5";
 
-        trans[35] = "S4S1";
+        EvtAnno[35] = "S4S1";
 
-        trans[36] = "S4S2";
+        EvtAnno[36] = "S4S2";
 
-        trans[37] = "S4S3";
+        EvtAnno[37] = "S4S3";
 
-        trans[38] = "S4S4";
+        EvtAnno[38] = "S4S4";
 
-        trans[39] = "S4S5";
+        EvtAnno[39] = "S4S5";
 
-        trans[40] = "S5S1";
+        EvtAnno[40] = "S5S1";
 
-        trans[41] = "S5S2";
+        EvtAnno[41] = "S5S2";
 
-        trans[42] = "S5S3";
+        EvtAnno[42] = "S5S3";
 
-        trans[43] = "S5S4";
+        EvtAnno[43] = "S5S4";
 
-        trans[44] = "S5S5";
+        EvtAnno[44] = "S5S5";
 
-        trans[51] = "StepN";
+        EvtAnno[51] = "StepN";
 
-        trans[52] = "SessN";
+        EvtAnno[52] = "SessN";
 
-        trans[49] = "trialNperSess";
+        EvtAnno[49] = "trialNperSess";
 
-        trans[45] = "SessHit";
+        EvtAnno[45] = "SessHit";
 
-        trans[46] = "SessMiss";
+        EvtAnno[46] = "SessMiss";
 
-        trans[47] = "SessFA";
+        EvtAnno[47] = "SessFA";
 
-        trans[48] = "SessCR";
+        EvtAnno[48] = "SessCR";
 
-        trans[50] = "SessCorrRate";
+        EvtAnno[50] = "SessCorrRate";
 
-        trans[53] = "FirOdor";
+        EvtAnno[53] = "FirOdor";
 
-        trans[54] = "FirOdorL";
+        EvtAnno[54] = "FirOdorL";
 
-        trans[55] = "OdorDelay";
+        EvtAnno[55] = "OdorDelay";
 
-        trans[56] = "SecOdor";
+        EvtAnno[56] = "SecOdor";
 
-        trans[57] = "SecOdorL";
+        EvtAnno[57] = "SecOdorL";
 
-        trans[58] = "trialtype";
+        EvtAnno[58] = "trialtype";
 
-        trans[59] = "ITI";
+        EvtAnno[59] = "ITI";
 
-        trans[60] = "proLpun";
+        EvtAnno[60] = "proLpun";
 
-        trans[61] = "Sess";
+        EvtAnno[61] = "Sess";
 
-        trans[62] = "Train";
+        EvtAnno[62] = "Train";
 
-        trans[65] = "laser";
+        EvtAnno[65] = "laser";
 
-        trans[66] = "Odor_C";
+        EvtAnno[66] = "Odor_C";
 
-        trans[64] = "Odor_D";
+        EvtAnno[64] = "Odor_D";
 
-        trans[67] = "Hit2";
+        EvtAnno[67] = "Hit2";
 
-        trans[68] = "Miss2";
+        EvtAnno[68] = "Miss2";
 
-        trans[69] = "FalseAlarm2";
+        EvtAnno[69] = "FalseAlarm2";
 
-        trans[70] = "FID";
+        EvtAnno[70] = "FID";
 
-        trans[71] = "Hit3";
+        EvtAnno[71] = "LickDisp";
 
-        trans[72] = "Miss3";
+        EvtAnno[72] = "Miss3";
 
-        trans[73] = "FalseAlarm3";
+        EvtAnno[73] = "FalseAlarm3";
 
-        trans[74] = "CorrectRejection3";
+        EvtAnno[74] = "CorrectRejection3";
 
-        trans[75] = "Hit4";
+        EvtAnno[75] = "Hit4";
 
-        trans[76] = "Miss4";
+        EvtAnno[76] = "Miss4";
 
-        trans[77] = "FalseAlarm4";
+        EvtAnno[77] = "FalseAlarm4";
 
-        trans[78] = "CorrectRejection4";
+        EvtAnno[78] = "CorrectRejection4";
 
-        trans[79] = "LaserSwitch";
+        EvtAnno[79] = "LaserSwitch";
 
-        trans[82] = "BallMove";
+        EvtAnno[82] = "BallMove";
 
-        trans[83] = "OdorE";
+        EvtAnno[83] = "OdorE";
 
-        trans[84] = "AbortTrial";
+        EvtAnno[84] = "AbortTrial";
 
-        trans[85] = "CorrectionCue";
-        trans[89] = "Choice";
-        trans[90] = "Confidence";
+        EvtAnno[85] = "CorrectionCue";
+        EvtAnno[89] = "Choice";
+        EvtAnno[90] = "Confidence";
 
 //
 //        //List of Permanent Messages
@@ -204,7 +204,7 @@ public class EventNames {
 //        permMessage[109] = "DMS LR bothOdor L+-";
 //        permMessage[110] = "DMS LR baseline L+-";
 //        permMessage[111] = "DMS LR response L+-";
-        return trans;
+        return EvtAnno;
 
     }
 

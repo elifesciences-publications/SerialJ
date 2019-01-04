@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -55,15 +54,15 @@ import org.knowm.xchart.XYChart;
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
 
+    final private String ver = "ZX Serial 0.75a @" + getPID();
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;
     private String statusFilePath;
-    final private String ver = "ZX Serial2 0.73 @" + getPID();
     private String statusFileParent = "E:\\ZXX\\StatusServer\\";
     private String savePath = "E:\\ZXX\\2018\\";
 
-    private XYChart chart = new XYChart(350, 120);
+    private XYChart lineChart = new XYChart(350, 120);
     private CategoryChart histoChart = new CategoryChart(350, 120);
     final private LinkedBlockingQueue<String> logTxtQue;
 
@@ -92,7 +91,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         logTxtQue = new LinkedBlockingQueue<>(50);
         ses = new ScheduledThreadPoolExecutor(1);
         u = new LogUpdator();
-        chart.getStyler().setPlotMargin(2).setAxisTicksVisible(false)
+        lineChart.getStyler().setPlotMargin(2).setXAxisTicksVisible(false).setYAxisTicksVisible(true).setYAxisDecimalPattern("0")
                 .setChartBackgroundColor(Color.white).setLegendVisible(false);
         histoChart.getStyler().setXAxisDecimalPattern("0").setXAxisLabelRotation(90).setLegendVisible(false).setChartBackgroundColor(Color.white);
 
@@ -167,23 +166,26 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         btnScript = new javax.swing.JToggleButton();
         jButtonReset = new javax.swing.JButton();
         pnlLogLCD = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtLCD = new javax.swing.JTextArea();
         jScrollTxtLog = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtLCD = new javax.swing.JTextArea();
+        jPanel6 = new javax.swing.JPanel();
+        lblLickLeft = new javax.swing.JLabel();
+        lblLickRight = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jTxtLickFreq = new javax.swing.JTextField();
         jButtonClearLickFreq = new javax.swing.JButton();
         btnHisto = new javax.swing.JToggleButton();
         pnlChart = new javax.swing.JPanel();
-        pnlLineChart = new XChartPanel<XYChart>(chart);
+        pnlLineChart = new XChartPanel<XYChart>(lineChart);
         pnlHisto = new XChartPanel(histoChart);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
-        setMaximumSize(new java.awt.Dimension(512, 2147483647));
         setMinimumSize(new java.awt.Dimension(300, 240));
-        setPreferredSize(new java.awt.Dimension(375, 470));
+        setPreferredSize(new java.awt.Dimension(389, 600));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         TopPanel.setMinimumSize(new java.awt.Dimension(350, 75));
@@ -344,7 +346,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtFileName.setRows(2);
         txtFileName.setText(savePath);
         txtFileName.setMinimumSize(new java.awt.Dimension(200, 60));
-        txtFileName.setPreferredSize(null);
+        txtFileName.setPreferredSize(new java.awt.Dimension(350, 60));
         jScrollFilePath.setViewportView(txtFileName);
 
         TopPanel.add(jScrollFilePath, java.awt.BorderLayout.CENTER);
@@ -358,7 +360,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         getContentPane().add(TopPanel, gridBagConstraints);
 
         pnlBottom.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        pnlBottom.setPreferredSize(new java.awt.Dimension(389, 600));
+        pnlBottom.setMinimumSize(new java.awt.Dimension(381, 240));
+        pnlBottom.setPreferredSize(new java.awt.Dimension(389, 240));
         pnlBottom.setLayout(new java.awt.GridLayout(1, 2, 3, 3));
 
         LBPanel.setMinimumSize(new java.awt.Dimension(100, 100));
@@ -627,16 +630,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         pnlLogLCD.setLayout(new java.awt.BorderLayout(0, 3));
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(146, 45));
-
-        txtLCD.setColumns(20);
-        txtLCD.setRows(5);
-        jScrollPane1.setViewportView(txtLCD);
-
-        pnlLogLCD.add(jScrollPane1, java.awt.BorderLayout.SOUTH);
-
         jScrollTxtLog.setAlignmentX(0.0F);
         jScrollTxtLog.setAlignmentY(0.0F);
         jScrollTxtLog.setMinimumSize(new java.awt.Dimension(100, 200));
@@ -648,6 +641,32 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         jScrollTxtLog.setViewportView(txtLog);
 
         pnlLogLCD.add(jScrollTxtLog, java.awt.BorderLayout.CENTER);
+
+        jPanel5.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(146, 45));
+
+        txtLCD.setColumns(20);
+        txtLCD.setRows(5);
+        jScrollPane1.setViewportView(txtLCD);
+
+        jPanel5.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanel6.setMinimumSize(new java.awt.Dimension(30, 10));
+        jPanel6.setName(""); // NOI18N
+        jPanel6.setLayout(new java.awt.GridLayout(2, 1));
+
+        lblLickLeft.setText("⚫");
+        jPanel6.add(lblLickLeft);
+
+        lblLickRight.setText("⚫");
+        jPanel6.add(lblLickRight);
+
+        jPanel5.add(jPanel6, java.awt.BorderLayout.EAST);
+
+        pnlLogLCD.add(jPanel5, java.awt.BorderLayout.SOUTH);
 
         RBPanel.add(pnlLogLCD, java.awt.BorderLayout.CENTER);
 
@@ -700,13 +719,15 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weighty = 3.0;
         getContentPane().add(pnlBottom, gridBagConstraints);
 
+        pnlChart.setPreferredSize(new java.awt.Dimension(350, 100));
         pnlChart.setLayout(new java.awt.CardLayout());
 
         pnlLineChart.setMinimumSize(new java.awt.Dimension(100, 100));
-        pnlLineChart.setPreferredSize(new java.awt.Dimension(350, 350));
+        pnlLineChart.setPreferredSize(new java.awt.Dimension(350, 100));
         pnlLineChart.setLayout(new java.awt.GridLayout(1, 0));
         pnlChart.add(pnlLineChart, "line");
 
+        pnlHisto.setPreferredSize(new java.awt.Dimension(350, 100));
         pnlHisto.setLayout(new java.awt.GridLayout(1, 0));
         pnlChart.add(pnlHisto, "bar");
 
@@ -796,10 +817,10 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtPerf.setText("");
 //        ydata_A.clear();
 //        ydata_B.clear();
-//        if (!chart.getSeriesMap().isEmpty()) {
-//            Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
+//        if (!lineChart.getSeriesMap().isEmpty()) {
+//            Set<String> keyset = new HashSet<>(lineChart.getSeriesMap().keySet());
 //            keyset.forEach((key) -> {
-//                chart.removeSeries(key);
+//                lineChart.removeSeries(key);
 //            });
 //        }
         pnlLineChart.repaint();
@@ -827,7 +848,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         if (null != redBgTimerTask && !redBgTimerTask.isCancelled()) {
             redBgTimerTask.cancel(true);
         }
-        TopPanel.setBackground((new Color(240, 240, 240)));
+        TopPanel.setBackground(new Color(240, 240, 240));
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
         }
@@ -946,7 +967,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 cl.show(pnlChart, "bar");
             }
         } else {
-            if (chart.getSeriesMap().keySet().isEmpty()) {
+            if (lineChart.getSeriesMap().keySet().isEmpty()) {
                 btnHisto.setSelected(true);
             } else {
                 CardLayout cl = (CardLayout) (pnlChart.getLayout());
@@ -1043,6 +1064,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         final private LinkedList<Double> hist_B = new LinkedList<>();
         private Histogram histo_A = new Histogram(hist_A, 50, 0, 1000);
         private Histogram histo_B = new Histogram(hist_B, 50, 0, 1000);
+        volatile public int lickDisp = 0;
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
@@ -1266,6 +1288,16 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     }
                     break;
 
+                case 71:
+                    switch (event[2]) {
+                        case 1:
+                            lickDisp |= 1;
+                            break;
+                        case 2:
+                            lickDisp |= 2;
+                            break;
+                    }
+
             }
         }
 
@@ -1277,41 +1309,38 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             if (grp < 0) {
                 hist_A.clear();
                 hist_B.clear();
+                return;
             } else if (grp == 0) {
                 hist_A.add((double) val);
             } else {
                 hist_B.add((double) val);
             }
-            if (hist_A.size() > 1000) {
-                hist_A.subList(0, hist_A.size() - 1000).clear();
+//            if (hist_A.isEmpty() && hist_B.isEmpty()) {
+//                return;
+//            }
+            if (hist_A.size() > 5000) {
+//                hist_A.subList(0, hist_A.size() - 1000).clear();
+                hist_A.subList(0, hist_A.size() - 50).clear();
             }
-            if (hist_B.size() > 1000) {
-                hist_B.subList(0, hist_B.size() - 1000).clear();
-            }
-            if (hist_A.isEmpty() && hist_B.isEmpty()) {
-                return;
+            if (hist_B.size() > 5000) {
+//                hist_B.subList(0, hist_B.size() - 1000).clear();
+                hist_B.subList(0, hist_B.size() - 50).clear();
             }
 
-            if (!btnHisto.isSelected() || chart.getSeriesMap().keySet().isEmpty()) {
-                List<Double> ydata_A = hist_A.size() > 30
-                        ? hist_A.subList(hist_A.size() - 30, hist_A.size())
-                        : hist_A;
-                List<Double> ydata_B = hist_B.size() > 30
-                        ? hist_B.subList(hist_B.size() - 30, hist_B.size())
-                        : hist_B;
-                Set<String> keyset = new HashSet<>(chart.getSeriesMap().keySet());
-                if (!ydata_A.isEmpty()) {
+            if (!btnHisto.isSelected() || lineChart.getSeriesMap().keySet().isEmpty()) {
+                Set<String> keyset = new HashSet<>(lineChart.getSeriesMap().keySet());
+                if (!hist_A.isEmpty()) {
                     if (!keyset.contains(dataNameA)) {
-                        chart.addSeries(dataNameA, null, ydata_A, null);
+                        lineChart.addSeries(dataNameA, null, hist_A.subList(hist_A.size() > 29 ? hist_A.size() - 30 : 0, hist_A.size()), null).setLineColor(Color.BLUE);
                     } else {
-                        chart.updateXYSeries(dataNameA, null, ydata_A, null);
+                        lineChart.updateXYSeries(dataNameA, null, hist_A.subList(hist_A.size() > 29 ? hist_A.size() - 30 : 0, hist_A.size()), null);
                     }
                 }
-                if (!ydata_B.isEmpty()) {
+                if (!hist_B.isEmpty()) {
                     if (!keyset.contains(dataNameB)) {
-                        chart.addSeries(dataNameB, null, ydata_B, null);
+                        lineChart.addSeries(dataNameB, null, hist_B.subList(hist_B.size() > 29 ? hist_B.size() - 30 : 0, hist_B.size()), null).setLineColor(Color.RED);
                     } else {
-                        chart.updateXYSeries(dataNameB, null, ydata_B, null);
+                        lineChart.updateXYSeries(dataNameB, null, hist_B.subList(hist_B.size() > 29 ? hist_B.size() - 30 : 0, hist_B.size()), null);
                     }
                 }
 
@@ -1319,17 +1348,17 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             if (histoChart.getSeriesMap().keySet().isEmpty() || btnHisto.isSelected()) {
                 Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
                 if (!hist_A.isEmpty()) {
-                    histo_A = new Histogram(hist_A, 50, 0, 1000);
+                    histo_A = new Histogram(hist_A.subList(hist_A.size() > 50 ? hist_A.size() - 50 : 0, hist_A.size()), 50, 0, 1000);
                     if (!histoKeyset.contains(histoNameA)) {
-                        histoChart.addSeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData());
+                        histoChart.addSeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData()).setFillColor(Color.BLUE);
                     } else {
                         histoChart.updateCategorySeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData(), null);
                     }
                 }
                 if (!hist_B.isEmpty()) {
-                    histo_B = new Histogram(hist_B, 50, 0, 1000);
+                    histo_B = new Histogram(hist_B.subList(hist_B.size() > 50 ? hist_B.size() - 50 : 0, hist_B.size()), 50, 0, 1000);
                     if (!histoKeyset.contains(histoNameB)) {
-                        histoChart.addSeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData());
+                        histoChart.addSeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData()).setFillColor(Color.RED);
                     } else {
                         histoChart.updateCategorySeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData(), null);
                     }
@@ -1457,6 +1486,26 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                     pnlHisto.revalidate();
                     pnlHisto.repaint();
                 }
+                switch (u.lickDisp) {
+                    case 1:
+                        lblLickLeft.setForeground(Color.green);
+                        lblLickRight.setForeground(Color.black);
+                        break;
+                    case 2:
+                        lblLickLeft.setForeground(Color.black);
+                        lblLickRight.setForeground(Color.green);
+                        break;
+                    case 3:
+                        lblLickLeft.setForeground(Color.green);
+                        lblLickRight.setForeground(Color.green);
+                        break;
+                    default:
+                        lblLickLeft.setForeground(Color.black);
+                        lblLickRight.setForeground(Color.black);
+                        break;
+
+                }
+                u.lickDisp = 0;
             });
 //            }
         }
@@ -1500,6 +1549,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollFilePath;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1507,6 +1558,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JTextField jTxtLickFreq;
     private javax.swing.JTextField jTxtPermText;
     private javax.swing.JLabel lblEmpty;
+    private javax.swing.JLabel lblLickLeft;
+    private javax.swing.JLabel lblLickRight;
     private javax.swing.JPanel pnlBottom;
     private javax.swing.JPanel pnlBtn;
     private javax.swing.JPanel pnlChart;
