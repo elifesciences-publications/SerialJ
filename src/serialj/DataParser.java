@@ -47,9 +47,9 @@ public class DataParser implements Runnable {
         File targetFile = new File(pathToFile);
         if (targetFile.exists() && !pathToFile.toLowerCase().contains("temp")) {
             updater.updateString("File Already Exist!");
-            SwingUtilities.invokeLater(() -> {
-
-            });
+//            SwingUtilities.invokeLater(() -> {
+//
+//            });
             return false;
         }
         File parent = targetFile.getParentFile();

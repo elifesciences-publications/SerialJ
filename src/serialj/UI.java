@@ -54,7 +54,7 @@ import org.knowm.xchart.XYChart;
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
 
-    final private String ver = "ZX Serial 0.75a @" + getPID();
+    final private String ver = "ZX Serial 0.76e @" + getPID();
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;
@@ -125,7 +125,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         java.awt.GridBagConstraints gridBagConstraints;
 
         TopPanel = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        btnPanel = new javax.swing.JPanel();
         cboxCOMList = new javax.swing.JComboBox();
         btnRecord = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
@@ -185,14 +185,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(ver);
         setMinimumSize(new java.awt.Dimension(300, 240));
-        setPreferredSize(new java.awt.Dimension(389, 600));
+        setPreferredSize(new java.awt.Dimension(400, 508));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         TopPanel.setMinimumSize(new java.awt.Dimension(350, 75));
-        TopPanel.setPreferredSize(new java.awt.Dimension(350, 125));
+        TopPanel.setPreferredSize(new java.awt.Dimension(350, 90));
         TopPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setLayout(new java.awt.GridBagLayout());
+        btnPanel.setLayout(new java.awt.GridBagLayout());
 
         cboxCOMList.setModel(new javax.swing.DefaultComboBoxModel(portNames));
         cboxCOMList.setMinimumSize(new java.awt.Dimension(80, 24));
@@ -209,7 +209,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 2.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(cboxCOMList, gridBagConstraints);
+        btnPanel.add(cboxCOMList, gridBagConstraints);
 
         btnRecord.setText("|>");
         btnRecord.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -228,7 +228,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(btnRecord, gridBagConstraints);
+        btnPanel.add(btnRecord, gridBagConstraints);
 
         btnStop.setText("[]");
         btnStop.setEnabled(false);
@@ -248,7 +248,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(btnStop, gridBagConstraints);
+        btnPanel.add(btnStop, gridBagConstraints);
 
         btnTemp.setText("TEMP");
         btnTemp.setMargin(new java.awt.Insets(2, 4, 2, 4));
@@ -267,7 +267,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(btnTemp, gridBagConstraints);
+        btnPanel.add(btnTemp, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
@@ -275,7 +275,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(lblEmpty, gridBagConstraints);
+        btnPanel.add(lblEmpty, gridBagConstraints);
 
         btnOpen.setText("Open");
         btnOpen.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -294,7 +294,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(btnOpen, gridBagConstraints);
+        btnPanel.add(btnOpen, gridBagConstraints);
 
         btnClear.setText("Clear");
         btnClear.setEnabled(false);
@@ -314,7 +314,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(btnClear, gridBagConstraints);
+        btnPanel.add(btnClear, gridBagConstraints);
 
         btnHumanPnl.setText("H");
         btnHumanPnl.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -333,9 +333,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(btnHumanPnl, gridBagConstraints);
+        btnPanel.add(btnHumanPnl, gridBagConstraints);
 
-        TopPanel.add(jPanel3, java.awt.BorderLayout.NORTH);
+        TopPanel.add(btnPanel, java.awt.BorderLayout.NORTH);
 
         jScrollFilePath.setMinimumSize(new java.awt.Dimension(200, 48));
         jScrollFilePath.setPreferredSize(new java.awt.Dimension(370, 60));
@@ -716,7 +716,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 3.0;
+        gridBagConstraints.weighty = 4.0;
         getContentPane().add(pnlBottom, gridBagConstraints);
 
         pnlChart.setPreferredSize(new java.awt.Dimension(350, 100));
@@ -736,7 +736,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 2.0;
+        gridBagConstraints.weighty = 3.0;
         getContentPane().add(pnlChart, gridBagConstraints);
 
         pack();
@@ -815,6 +815,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtCurrPref.setText("");
         txtLog.setText("");
         txtPerf.setText("");
+        logTxtQue.clear();
 //        ydata_A.clear();
 //        ydata_B.clear();
 //        if (!lineChart.getSeriesMap().isEmpty()) {
@@ -823,8 +824,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 //                lineChart.removeSeries(key);
 //            });
 //        }
-        pnlLineChart.repaint();
         pnlLineChart.revalidate();
+        pnlLineChart.repaint();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
@@ -848,7 +849,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         if (null != redBgTimerTask && !redBgTimerTask.isCancelled()) {
             redBgTimerTask.cancel(true);
         }
-        TopPanel.setBackground(new Color(240, 240, 240));
+        btnPanel.setBackground(new Color(240, 240, 240));
         for (JComponent jc : btnDisableGrp) {
             jc.setEnabled(true);
         }
@@ -865,6 +866,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
         if (cboxCOMList.getSelectedIndex() < 0
                 || txtFileName.getText().endsWith("\\")) {
+            u.updateString("Error in COM port or file path!");
             return;
         }
         txtFileName.setText(txtFileName.getText().replaceAll("\\[COM\\]", portNames[cboxCOMList.getSelectedIndex()]));
@@ -1065,6 +1067,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         private Histogram histo_A = new Histogram(hist_A, 50, 0, 1000);
         private Histogram histo_B = new Histogram(hist_B, 50, 0, 1000);
         volatile public int lickDisp = 0;
+//        private boolean chartIsDirty = false;
 
 //        private LinkedList<Double> xdata = new LinkedList<>();
         public LogUpdator() {
@@ -1155,8 +1158,8 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 alarm = false;
                 try {
                     SwingUtilities.invokeAndWait(() -> {
-                        if (TopPanel.getBackground().equals(Color.red)) {
-                            TopPanel.setBackground(new Color(240, 240, 240));
+                        if (btnPanel.getBackground().equals(Color.red)) {
+                            btnPanel.setBackground(new Color(240, 240, 240));
                         }
                     });
                 } catch (InterruptedException | InvocationTargetException ex) {
@@ -1309,6 +1312,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             if (grp < 0) {
                 hist_A.clear();
                 hist_B.clear();
+                lineChart.getSeriesMap().clear();
+//                lineChart.addSeries("NULL", new int[]{0});
+                histoChart.getSeriesMap().clear();
+//                histoChart.addSeries("NULL", new int[]{0}, new int[]{0});
+//                chartIsDirty = true;
+
+                pnlLineChart.revalidate();
+                pnlLineChart.repaint();
                 return;
             } else if (grp == 0) {
                 hist_A.add((double) val);
@@ -1329,6 +1340,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
             if (!btnHisto.isSelected() || lineChart.getSeriesMap().keySet().isEmpty()) {
                 Set<String> keyset = new HashSet<>(lineChart.getSeriesMap().keySet());
+                if (lineChart.getSeriesMap().keySet().contains("NULL")) {
+                    lineChart.getSeriesMap().clear();
+                }
                 if (!hist_A.isEmpty()) {
                     if (!keyset.contains(dataNameA)) {
                         lineChart.addSeries(dataNameA, null, hist_A.subList(hist_A.size() > 29 ? hist_A.size() - 30 : 0, hist_A.size()), null).setLineColor(Color.BLUE);
@@ -1347,6 +1361,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             }
             if (histoChart.getSeriesMap().keySet().isEmpty() || btnHisto.isSelected()) {
                 Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
+                if (histoKeyset.contains("NULL")) {
+                    lineChart.getSeriesMap().clear();
+                }
                 if (!hist_A.isEmpty()) {
                     histo_A = new Histogram(hist_A.subList(hist_A.size() > 50 ? hist_A.size() - 50 : 0, hist_A.size()), 50, 0, 1000);
                     if (!histoKeyset.contains(histoNameA)) {
@@ -1436,9 +1453,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
             rFreq = 0;
             rFreqMax = 0;
             lFreqMax = 0;
+
             SwingUtilities.invokeLater(
                     () -> {
-                        jTxtLickFreq.setText("");
+                        if (jTxtLickFreq.getText().length() < 5) {
+                            jTxtPermText.setText("");
+                        } else {
+                            jTxtLickFreq.setText("");
+                        }
                     });
         }
     }
@@ -1457,7 +1479,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 try {
                     SwingUtilities.invokeAndWait(
                             () -> {
-                                TopPanel.setBackground(Color.red);
+                                btnPanel.setBackground(Color.red);
+                                btnPanel.revalidate();
+                                btnPanel.repaint();
                             });
                 } catch (InterruptedException | InvocationTargetException ex) {
                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
@@ -1526,6 +1550,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JToggleButton btnHisto;
     private javax.swing.JButton btnHumanPnl;
     private javax.swing.JButton btnOpen;
+    private javax.swing.JPanel btnPanel;
     private javax.swing.JButton btnRecord;
     private javax.swing.JToggleButton btnScript;
     private javax.swing.JButton btnSlash;
@@ -1547,7 +1572,6 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton jButtonReset;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
