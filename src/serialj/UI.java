@@ -53,8 +53,8 @@ import org.knowm.xchart.XYChart;
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
-
-    final private String ver = "ZX Serial 0.76e @" + getPID();
+ 
+    final private String ver = "ZX Serial 0.76g @" + getPID();
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;
@@ -141,9 +141,9 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         btnDate = new javax.swing.JButton();
-        btnType = new javax.swing.JButton();
-        btnSlash = new javax.swing.JButton();
         btnCOM = new javax.swing.JButton();
+        btnSlash = new javax.swing.JButton();
+        btnType = new javax.swing.JButton();
         scrollPerf = new javax.swing.JScrollPane();
         txtPerf = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -384,17 +384,14 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         });
         jPanel1.add(btnDate);
 
-        btnType.setText("Type");
-        btnType.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnType.setMaximumSize(new java.awt.Dimension(32767, 32767));
-        btnType.setMinimumSize(new java.awt.Dimension(40, 24));
-        btnType.setPreferredSize(new java.awt.Dimension(50, 24));
-        btnType.addActionListener(new java.awt.event.ActionListener() {
+        btnCOM.setText("COM");
+        btnCOM.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnCOM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTypeActionPerformed(evt);
+                btnCOMActionPerformed(evt);
             }
         });
-        jPanel1.add(btnType);
+        jPanel1.add(btnCOM);
 
         btnSlash.setText(File.separator);
         btnSlash.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -408,14 +405,17 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         });
         jPanel1.add(btnSlash);
 
-        btnCOM.setText("COM");
-        btnCOM.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnCOM.addActionListener(new java.awt.event.ActionListener() {
+        btnType.setText("Type");
+        btnType.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnType.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        btnType.setMinimumSize(new java.awt.Dimension(40, 24));
+        btnType.setPreferredSize(new java.awt.Dimension(50, 24));
+        btnType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCOMActionPerformed(evt);
+                btnTypeActionPerformed(evt);
             }
         });
-        jPanel1.add(btnCOM);
+        jPanel1.add(btnType);
 
         jPanel2.add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -816,16 +816,11 @@ public class UI extends javax.swing.JFrame implements WindowListener {
         txtLog.setText("");
         txtPerf.setText("");
         logTxtQue.clear();
-//        ydata_A.clear();
-//        ydata_B.clear();
-//        if (!lineChart.getSeriesMap().isEmpty()) {
-//            Set<String> keyset = new HashSet<>(lineChart.getSeriesMap().keySet());
-//            keyset.forEach((key) -> {
-//                lineChart.removeSeries(key);
-//            });
-//        }
+        u.updateChart(0, -1);
         pnlLineChart.revalidate();
         pnlLineChart.repaint();
+        pnlHisto.revalidate();
+        pnlHisto.repaint();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
@@ -909,7 +904,11 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     private void btnScriptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScriptActionPerformed
         if (btnScript.isSelected()) {
             JFileChooser fc = new JFileChooser();
-            fc.setCurrentDirectory((new File(".")));
+            File dd = new File(".\\script");
+            if ((!dd.exists()) || !dd.isDirectory()) {
+                dd = new File(".");
+            }
+            fc.setCurrentDirectory(dd);
             fc.setFileFilter(new javax.swing.filechooser.FileFilter() {
 
                 @Override
@@ -946,7 +945,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
     }//GEN-LAST:event_btnCOMActionPerformed
 
     private void btnTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempActionPerformed
-        if (!txtFileName.getText().endsWith("TEMP_[COM].ser")) {
+        if (!txtFileName.getText().contains("TEMP_")) {
             txtFileName.append("TEMP_[COM].ser");
         }
         btnRecordActionPerformed(evt);
@@ -1456,7 +1455,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
 
             SwingUtilities.invokeLater(
                     () -> {
-                        if (jTxtLickFreq.getText().length() < 5) {
+                        if (btnRecord.isEnabled()) {
                             jTxtPermText.setText("");
                         } else {
                             jTxtLickFreq.setText("");
