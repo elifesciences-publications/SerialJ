@@ -21,9 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -47,13 +45,14 @@ import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.Histogram;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 /**
  *
  * @author Xiaoxing
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
- 
+
     final private String ver = "ZX Serial 0.76g @" + getPID();
     final private String[] portNames;
     private LogUpdator u;
@@ -1312,10 +1311,7 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 hist_A.clear();
                 hist_B.clear();
                 lineChart.getSeriesMap().clear();
-//                lineChart.addSeries("NULL", new int[]{0});
                 histoChart.getSeriesMap().clear();
-//                histoChart.addSeries("NULL", new int[]{0}, new int[]{0});
-//                chartIsDirty = true;
 
                 pnlLineChart.revalidate();
                 pnlLineChart.repaint();
@@ -1337,35 +1333,27 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 hist_B.subList(0, hist_B.size() - 50).clear();
             }
 
-            if (!btnHisto.isSelected() || lineChart.getSeriesMap().keySet().isEmpty()) {
-                Set<String> keyset = new HashSet<>(lineChart.getSeriesMap().keySet());
-                if (lineChart.getSeriesMap().keySet().contains("NULL")) {
-                    lineChart.getSeriesMap().clear();
-                }
+            if (!btnHisto.isSelected() || lineChart.getSeriesMap().isEmpty()) {
                 if (!hist_A.isEmpty()) {
-                    if (!keyset.contains(dataNameA)) {
-                        lineChart.addSeries(dataNameA, null, hist_A.subList(hist_A.size() > 29 ? hist_A.size() - 30 : 0, hist_A.size()), null).setLineColor(Color.BLUE);
+                    if (!lineChart.getSeriesMap().containsKey(dataNameA)) {
+                        lineChart.addSeries(dataNameA, null, hist_A.subList(hist_A.size() > 29 ? hist_A.size() - 30 : 0, hist_A.size()), null).setMarker(SeriesMarkers.NONE).setLineColor(Color.BLUE);
                     } else {
                         lineChart.updateXYSeries(dataNameA, null, hist_A.subList(hist_A.size() > 29 ? hist_A.size() - 30 : 0, hist_A.size()), null);
                     }
                 }
                 if (!hist_B.isEmpty()) {
-                    if (!keyset.contains(dataNameB)) {
-                        lineChart.addSeries(dataNameB, null, hist_B.subList(hist_B.size() > 29 ? hist_B.size() - 30 : 0, hist_B.size()), null).setLineColor(Color.RED);
+                    if (!lineChart.getSeriesMap().containsKey(dataNameB)) {
+                        lineChart.addSeries(dataNameB, null, hist_B.subList(hist_B.size() > 29 ? hist_B.size() - 30 : 0, hist_B.size()), null).setMarker(SeriesMarkers.NONE).setLineColor(Color.RED);
                     } else {
                         lineChart.updateXYSeries(dataNameB, null, hist_B.subList(hist_B.size() > 29 ? hist_B.size() - 30 : 0, hist_B.size()), null);
                     }
                 }
 
             }
-            if (histoChart.getSeriesMap().keySet().isEmpty() || btnHisto.isSelected()) {
-                Set<String> histoKeyset = new HashSet<>(histoChart.getSeriesMap().keySet());
-                if (histoKeyset.contains("NULL")) {
-                    lineChart.getSeriesMap().clear();
-                }
+            if (histoChart.getSeriesMap().isEmpty() || btnHisto.isSelected()) {
                 if (!hist_A.isEmpty()) {
                     histo_A = new Histogram(hist_A.subList(hist_A.size() > 50 ? hist_A.size() - 50 : 0, hist_A.size()), 50, 0, 1000);
-                    if (!histoKeyset.contains(histoNameA)) {
+                    if (!histoChart.getSeriesMap().containsKey(histoNameA)) {
                         histoChart.addSeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData()).setFillColor(Color.BLUE);
                     } else {
                         histoChart.updateCategorySeries(histoNameA, histo_A.getxAxisData(), histo_A.getyAxisData(), null);
@@ -1373,14 +1361,13 @@ public class UI extends javax.swing.JFrame implements WindowListener {
                 }
                 if (!hist_B.isEmpty()) {
                     histo_B = new Histogram(hist_B.subList(hist_B.size() > 50 ? hist_B.size() - 50 : 0, hist_B.size()), 50, 0, 1000);
-                    if (!histoKeyset.contains(histoNameB)) {
+                    if (!histoChart.getSeriesMap().containsKey(histoNameB)) {
                         histoChart.addSeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData()).setFillColor(Color.RED);
                     } else {
                         histoChart.updateCategorySeries(histoNameB, histo_B.getxAxisData(), histo_B.getyAxisData(), null);
                     }
                 }
             }
-
             this.chartUpdated.set(true);
         }
 
