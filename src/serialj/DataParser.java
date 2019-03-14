@@ -137,6 +137,7 @@ public class DataParser implements Runnable {
         }
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(targetFile))) {
             out.writeObject(l);
+            out.flush();
         } catch (IOException e) {
             updater.updateString(e.toString());
         }
