@@ -53,7 +53,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
  */
 public class UI extends javax.swing.JFrame implements WindowListener {
 
-    final private String ver = "ZX Serial 0.77 @" + getPID();
+    final private String ver = "ZX Serial 0.77a @" + getPID();
     final private String[] portNames;
     private LogUpdator u;
     private PortAccessor p;

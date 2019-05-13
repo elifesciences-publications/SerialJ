@@ -53,6 +53,7 @@ public class FrmHuman extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         rdoSort = new javax.swing.JRadioButton();
         rdoMatch = new javax.swing.JRadioButton();
+        rdoCapacity = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         btn1 = new javax.swing.JButton();
         btn2 = new javax.swing.JButton();
@@ -96,7 +97,7 @@ public class FrmHuman extends javax.swing.JFrame {
 
         jPanel1.add(jPanel4, java.awt.BorderLayout.CENTER);
 
-        jPanel5.setLayout(new java.awt.GridLayout(2, 1));
+        jPanel5.setLayout(new java.awt.GridLayout(3, 1));
 
         btnTaskType.add(rdoSort);
         rdoSort.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
@@ -118,6 +119,16 @@ public class FrmHuman extends javax.swing.JFrame {
             }
         });
         jPanel5.add(rdoMatch);
+
+        btnTaskType.add(rdoCapacity);
+        rdoCapacity.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
+        rdoCapacity.setText("容量");
+        rdoCapacity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rdoCapacityActionPerformed(evt);
+            }
+        });
+        jPanel5.add(rdoCapacity);
 
         jPanel1.add(jPanel5, java.awt.BorderLayout.EAST);
 
@@ -411,6 +422,10 @@ public class FrmHuman extends javax.swing.JFrame {
                 btn5.setEnabled(false);
                 btn6.setEnabled(false);
                 btn7.setEnabled(false);
+                btnMatch.setText("相同");
+                btnNonMatch.setText("不同");
+                jPanel2.revalidate();
+                jPanel2.repaint();
             }
         }
         );
@@ -469,9 +484,33 @@ public class FrmHuman extends javax.swing.JFrame {
         p.writeByte((byte) 0x39);
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    private void rdoCapacityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoCapacityActionPerformed
+        SwingUtilities.invokeLater(() -> {
+            if (rdoCapacity.isSelected()) {
+                btnMatch.setEnabled(true);
+                btnNonMatch.setEnabled(true);
+                btn1.setEnabled(false);
+                btn2.setEnabled(false);
+                btn3.setEnabled(false);
+                btn4.setEnabled(false);
+                btn5.setEnabled(false);
+                btn6.setEnabled(false);
+                btn7.setEnabled(false);
+                btnMatch.setText("出现过");
+                btnNonMatch.setText("没出现过");
+                jPanel2.revalidate();
+                jPanel2.repaint();
+            }
+        });
+    }//GEN-LAST:event_rdoCapacityActionPerformed
+
     public void updateTipTxt(String str1, String str2) {
         SwingUtilities.invokeLater(() -> {
-            if (str1.startsWith("1 for match")) {
+            if (str1.contains("testStart")) {
+                lblHumanTips.setText("该气味是否出现过？");
+            } else if (str1.startsWith("testEnd")) {
+                lblHumanTips.setText("请注意气味信号");
+            } else if (str1.startsWith("1 for match")) {
                 lblHumanTips.setText("气味一和气味二相同吗？");
             } else if (str1.startsWith("Sample")) {
                 lblHumanTips.setText("气味一");
@@ -598,6 +637,7 @@ public class FrmHuman extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JLabel lblHumanTips;
+    private javax.swing.JRadioButton rdoCapacity;
     private javax.swing.JRadioButton rdoMatch;
     private javax.swing.JRadioButton rdoSort;
     // End of variables declaration//GEN-END:variables
